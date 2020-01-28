@@ -16,7 +16,7 @@ namespace TestApplication
         public void Mutate(ref IWeightedList<ConcreteSpecimen, double> population)
         {
             // Mutate
-            var totalNumberOfMutableProperties = population.Count * 4; // population size * number of mutable properties.
+            var totalNumberOfMutableProperties = population.Count * 2; // population size * number of mutable properties.
 
             var indexes = Enumerable.Range(0, totalNumberOfMutableProperties)
                                     .OrderBy(x => Guid.NewGuid())
@@ -24,25 +24,22 @@ namespace TestApplication
 
             foreach (var idx in indexes)
             {
-                var cellIndex = idx / 4;
-                var propertyIndex = idx % 4;
+                var cellIndex = idx / 2;
+                var propertyIndex = idx % 2;
 
                 var specimen = population[cellIndex].Item;
 
-                var a = specimen.A;
-                var b = specimen.B;
-                var c = specimen.C;
-                var d = specimen.D;
+                var x = specimen.X;
+                var y = specimen.Y;
 
                 switch (propertyIndex)
                 {
-                    case 1: a = random.Next(-30, 31); break;
-                    case 2: b = random.Next(-30, 31); break;
-                    case 3: c = random.Next(-30, 31); break;
-                    case 4: d = random.Next(-30, 31); break;
+                    case 0: x = -4 + random.NextDouble() * 8; break;
+                    case 1: y = -4 + random.NextDouble() * 8; break;
+                    default: throw new ArgumentOutOfRangeException(nameof(propertyIndex));
                 }
 
-                var mutatedSpecimen = new ConcreteSpecimen(a, b, c, d);
+                var mutatedSpecimen = new ConcreteSpecimen(x, y);
 
                 population[cellIndex] = new WeightedItem<ConcreteSpecimen, double>(mutatedSpecimen, 0);
             }

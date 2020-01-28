@@ -1,42 +1,34 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace TestApplication
 {
     public class Program
     {
+        public const double DoublePrecision = 0.00001d;
+
         static void Main(string[] args)
         {
             Console.WriteLine("╔══════════════════════╗");
             Console.WriteLine("║ Hello Genetic World! ║");
             Console.WriteLine("╚══════════════════════╝");
             Console.WriteLine();
-
-            if (args.Length != 1 || !int.TryParse(args[0], out int target))
-            {
-                var exeName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-                Console.WriteLine("[Usage]");
-                Console.WriteLine();
-                Console.WriteLine($"   {exeName} <target number>");
-                Console.WriteLine();
-                Console.WriteLine("[Example]");
-                Console.WriteLine();
-                Console.WriteLine($"   {exeName} 30");
-                return;
-            }
-
-            Console.WriteLine("In this application we will try to generate the possible (approximating) solution to the following function:");
+            Console.WriteLine("Now let's do something more interesting. In this application we will try to generate the possible (approximating) solution to the following function:");
             Console.WriteLine();
-            Console.WriteLine($"   a + 2b + 3c + 4d = {target}");
+            Console.WriteLine($"   sin(x² + y²) = 0");
             Console.WriteLine();
-
+            Console.WriteLine("Afterwards we will plot the found points in the -2..+2 plane.");
+            Console.WriteLine();
             Console.WriteLine("Launching algorithm.");
 
             // Used to build the starter population:
             var builder = new ConcretePopulationBuilder();
             
             // Used to define the fitness function.
-            var fitnessProvider = new ConcreteFitnessProvider(target);
+            var fitnessProvider = new ConcreteFitnessProvider(0);
 
             // The selector - nature's laws - which will select who will mate with who and what children will be born:
             var selector = new ConcretePopulationSelector(fitnessProvider);
@@ -64,14 +56,74 @@ namespace TestApplication
             }
 
             Console.WriteLine();
-            Console.WriteLine("Done.");
+            Console.WriteLine("Stopped.");
             Console.WriteLine();
 
+            const int imgWidth = 1500;
+            const int imgHeight = 1500;
+
+            var bmp = new Bitmap(imgWidth, imgHeight);
+            var g = Graphics.FromImage(bmp);
+
+            var rect = new Rectangle(0, 0, imgWidth, imgHeight);
+            g.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
+
+            var leftTop = Translate(-1, 1, imgWidth, imgHeight);
+            var leftMiddle = Translate(-1, 0, imgWidth, imgHeight);
+            var leftBottom = Translate(-1, -1, imgWidth, imgHeight);
+
+            var rightTop = Translate(1, 1, imgWidth, imgHeight);
+            var rightMiddle = Translate(1, 0, imgWidth, imgHeight);
+            var rightBottom = Translate(1, -1, imgWidth, imgHeight);
+
+            var topMiddle = Translate(0, 1, imgWidth, imgHeight);
+            var bottomMiddle = Translate(0, -1, imgWidth, imgHeight);
+
+            g.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
+            g.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+
+            var b = Brushes.GreenYellow;
+
             // Print out found specimens:
-            foreach (var item in evolutionAlgorithm.Result.OrderBy(x => x.A).ThenBy(x => x.B).ThenBy(x => x.C).ThenBy(x => x.D))
+            foreach (var item in evolutionAlgorithm.Result.OrderBy(x => x.X).ThenBy(x => x.Y))
             {
-                Console.WriteLine($"{item.A} + (2 * {item.B}) + (3 * {item.C}) + (4 * {item.D}) = {item.A} + {2 * item.B} + {3 * item.C} + {4 * item.D} = {item.A + 2 * item.B + 3 * item.C + 4 * item.D}.");
+                var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
+                g.FillRectangle(b, position.x, position.y, 1, 1);
             }
+
+            bmp.Save("output.bmp");
+
+            Console.WriteLine("Image saved. Trying to open with associated application...");
+
+            new Process
+            {
+                StartInfo = new ProcessStartInfo(@"output.bmp")
+                {
+                    UseShellExecute = true
+                }
+            }.Start();
+        }
+
+        /// <summary>
+        /// Translates the given dx, dy to "image coordinates" where the image size is given.
+        /// dy and dy considered to be between -1 and 1.
+        /// </summary>
+        /// <param name="dx">The value in the X-axis, must be between [-1, 1].</param>
+        /// <param name="dy">The value in the Y-axis, must be between [-1, 1].</param>
+        /// <param name="width">Width of the canvas where we would like to plot the found points of the function.</param>
+        /// <param name="height">Height of the canvas where we would like to plot the found points of the function.</param>
+        /// <returns>A tuple of (x, y) with the translated coordinates.</returns>
+        private static (int x, int y) Translate(double dx, double dy, int width, int height)
+        {
+            var halfWidth = width / 2.0d;
+            var halfHeight = height / 2.0d;
+            
+            var middleY = height / 2;
+
+            var tx = (int)Math.Round((dx + 1) * halfWidth);
+            var ty = (int)Math.Round(middleY - dy * halfHeight);
+
+            return (tx, ty);
         }
     }
 }

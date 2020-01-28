@@ -5,50 +5,42 @@ namespace TestApplication
 {
     public class ConcreteSpecimen : IClonable<ConcreteSpecimen>, ICloneable, IEquatable<ConcreteSpecimen>
     {
-        public ConcreteSpecimen(int a, int b, int c, int d)
+        public ConcreteSpecimen(double x, double y)
         {
-            A = a;
-            B = b;
-            C = c;
-            D = d;
+            X = x;
+            Y = y;
         }
 
-        public int this[int key]
+        public double this[int key]
         {
             get
             {
                 return key switch
                 {
-                    0 => A,
-                    1 => B,
-                    2 => C,
-                    3 => D,
-                    _ => throw new IndexOutOfRangeException("Index has to be between 0-3 inclusive."),
+                    0 => X,
+                    1 => Y,
+                    _ => throw new IndexOutOfRangeException("Index has to be between 0-1 inclusive."),
                 };
             }
         }
 
-        public int A { get; }
+        public double X { get; }
 
-        public int B { get; }
-
-        public int C { get; }
-        
-        public int D { get; }
+        public double Y { get; }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(A, B, C, D);
+            return HashCode.Combine(X, Y);
         }
 
         public override string ToString()
         {
-            return $"A={A} B={B} C={C} D={D}";
+            return $"X={X} Y={Y}";
         }
 
         public ConcreteSpecimen Clone()
         {
-            return new ConcreteSpecimen(A, B, C, D);
+            return new ConcreteSpecimen(X, Y);
         }
 
         object ICloneable.Clone()
@@ -68,10 +60,7 @@ namespace TestApplication
                 return true;
             }
 
-            return A == other.A
-                && B == other.B
-                && C == other.C
-                && D == other.D;
+            return X.Equals5Precision(other.X) && Y.Equals5Precision(other.Y);
         }
 
         public override bool Equals([AllowNull]object obj)

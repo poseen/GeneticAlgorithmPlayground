@@ -18,7 +18,15 @@ namespace TestApplication
             foreach (var item in population)
             {
                 // Calculate the fitness value of the specimen. 1 means perfect specimen, lower values are worse.
-                var fitness = 1.0d / (1.0d + Math.Abs(FitnessFunction(item.Item.A, item.Item.B, item.Item.C, item.Item.D) - _target));
+                var distanceFromTarget = Math.Abs(FitnessFunction(item.Item.X, item.Item.Y) - 0);
+                
+                // We are searching for those points, which are inside (-2, -2)..(2, 2) radius.
+                if(Math.Abs(item.Item.X) > 2 || Math.Abs(item.Item.Y) > 2)
+                {
+                    distanceFromTarget = 2;
+                }
+
+                var fitness = 1.0d / (1.0d + distanceFromTarget);
 
                 item.Weight = fitness;
             }
@@ -26,12 +34,15 @@ namespace TestApplication
 
         public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen, double> population)
         {
-            return population.Where(x => x.Weight.Equals(1)).Select(x => x.Item).ToList().AsReadOnly();
+            return population.Where(x => 1 - x.Weight < 0.01d)
+                             .Select(x => x.Item)
+                             .ToList()
+                             .AsReadOnly();
         }
 
-        private int FitnessFunction(int a, int b, int c, int d)
+        private double FitnessFunction(double x, double y)
         {
-            return a + (2 * b) + (3 * c) + (4 * d);
+            return Math.Sin(x * x + y * y);
         }
     }
 }

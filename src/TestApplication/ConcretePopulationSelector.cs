@@ -57,11 +57,6 @@ namespace TestApplication
 
                         foreach (var item in originalPopulation)
                         {
-                            if(item.Weight == 0)
-                            {
-                                throw new ArgumentException("Provided weight of the item is 0. Before running selector, always recalculate the weight of the items!");
-                            }
-
                             currentFitness += item.Weight;
 
                             if (number > currentFitness)
@@ -72,10 +67,7 @@ namespace TestApplication
                     }
                 }
 
-                var offSpring = new ConcreteSpecimen(parents[random.Next(0, 2)].A,
-                                                     parents[random.Next(0, 2)].B,
-                                                     parents[random.Next(0, 2)].C,
-                                                     parents[random.Next(0, 2)].D);
+                var offSpring = new ConcreteSpecimen(parents[random.Next(0, 2)].X, parents[random.Next(0, 2)].Y);
                 
                 population.Add(new WeightedItem<ConcreteSpecimen, double>(offSpring, 0));
             }

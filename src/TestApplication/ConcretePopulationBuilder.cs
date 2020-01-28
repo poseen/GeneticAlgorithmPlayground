@@ -14,12 +14,7 @@ namespace TestApplication
             var result = new WeightedList<ConcreteSpecimen, double>(sizeOfStarterPopulation);
             for (var i = 0; i < sizeOfStarterPopulation; i++)
             {
-                var cell = new ConcreteSpecimen(random.Next(-30, 31),
-                                            random.Next(-30, 31),
-                                            random.Next(-30, 31),
-                                            random.Next(-30, 31));
-
-
+                var cell = new ConcreteSpecimen(-4 + random.NextDouble() * 8, -4 + random.NextDouble() * 8);
                 result.Add(new WeightedItem<ConcreteSpecimen, double>(cell, 0));
             }
 
