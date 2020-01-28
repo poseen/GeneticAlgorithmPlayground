@@ -69,7 +69,7 @@ Done.
 ## Main concept
 The main concept of the algorithm:
 
-![alt text](doc\algorithm.png "Algorithm flowchart")
+![alt text](https://raw.githubusercontent.com/poseen/GeneticAlgorithmPlayground/master/doc/algorithm.png "Algorithm flowchart")
 
 ### Generate population
 (Initialization) The algorithm will generate a fixed sized population (100) with random properties and will keep it at that level.
@@ -96,7 +96,7 @@ With a given probability of mutation the algorithm changes some properties in th
 
  P<sub>0</sub>...P<sub>3</sub> represents the properties of the specimens, and let's put the specimens in order and assign numbers to the propertiesin the following manner:
 
- ![alt text](doc\mutation.png "Mutation example")
+ ![alt text](https://raw.githubusercontent.com/poseen/GeneticAlgorithmPlayground/master/doc/mutation.png "Mutation example")
 
 Formula to be used:
 ```
