@@ -1,7 +1,11 @@
+(Documentation is not up-to-date!)
+
 # Introduction 
 Some fun with genetic algorithms. We will try to find the solution to a simple formula, like:
 
-> **a** + **2b** + **3c** + **4d** = **[ Target Number ]**
+> **sin(x<sup>2</sup> + y<sup>2</sup>) = 0**
+
+In this case we are not searching for exact solutions, we are okay with approximations too. In the end the found points will be plotted to an image and shown.[3]
 
 In the process hopefully we will fall into many of the pitfalls of genetic algorithms to gain experience in the field.
 
@@ -16,55 +20,32 @@ Just clone the repository, open the solution file in VS and you are ready to go.
 
 ## Latest releases
 
-| Date       | Version     | Summary                                                          |
-|------------|-------------|------------------------------------------------------------------|
-| 2020-01-27 | 1.0         | First working version. The most simple version of the algorithm. |
+| Date       | Version     | Summary                                                                           |
+|------------|-------------|-----------------------------------------------------------------------------------|
+| 2020-01-28 | 2.0         | Algorithm remains the same, working with more complex function and approximation. |
+| 2020-01-27 | 1.0         | First working version. The most simple version of the algorithm.                  |
 
 # Build and Test
 Open the solution in Visual Studio and hit build/run.
 
 # Run
-When launched without parameters the application will show the help:
-```
-[Usage]
-
-   TestApplication.exe <target number>
-
-[Example]
-
-   TestApplication.exe 30
-```
-The target number is what the formula should be equal to:
-
-> **a** + **2b** + **3c** + **4d** = **[ Target Number ]**
-
-Example:
-```
-TestApplication.exe 67
-```
+Launch the application without parameters.
 
 ## Example output
 ```
 In this application we will try to generate the possible (approximating) solution to the following function:
 
-   a + 2b + 3c + 4d = 67
+   sin(x² + y²) = 0
 
 Launching algorithm.
 Press [ESC] to stop.
-324 iteration, found specimens: 10.
+19231 iteration, found specimens: 4599.
 Done.
 
--30 + (2 * 19) + (3 * 29) + (4 * -7) = -30 + 38 + 87 + -28 = 67.
--30 + (2 * 22) + (3 * 27) + (4 * -7) = -30 + 44 + 81 + -28 = 67.
--30 + (2 * 25) + (3 * 25) + (4 * -7) = -30 + 50 + 75 + -28 = 67.
--30 + (2 * 28) + (3 * 23) + (4 * -7) = -30 + 56 + 69 + -28 = 67.
--29 + (2 * 17) + (3 * 30) + (4 * -7) = -29 + 34 + 90 + -28 = 67.
--29 + (2 * 20) + (3 * 28) + (4 * -7) = -29 + 40 + 84 + -28 = 67.
--29 + (2 * 23) + (3 * 26) + (4 * -7) = -29 + 46 + 78 + -28 = 67.
--29 + (2 * 26) + (3 * 24) + (4 * -7) = -29 + 52 + 72 + -28 = 67.
--29 + (2 * 29) + (3 * 22) + (4 * -7) = -29 + 58 + 66 + -28 = 67.
--28 + (2 * 18) + (3 * 29) + (4 * -7) = -28 + 36 + 87 + -28 = 67.
 ```
+Generated image:
+![alt text](https://raw.githubusercontent.com/poseen/GeneticAlgorithmPlayground/master/doc/exampleOutput.bmp "Example output")
+
 # Algorithm
 ## Main concept
 The main concept of the algorithm:
@@ -151,6 +132,8 @@ No contribution is needed yet, this solution is just for fun, but if you find so
 # References
 - [Roulette Wheel selection procedure (StackOverflow.com)][1]
 - [Hermawanto, Denny (2020). Genetic Algorithm for Solving Simple Mathematical Equality Problem][2]
+- [The sin(x<sup>2</sup> + y<sup>2</sup>) function][3]
 
 [1]: https://stackoverflow.com/questions/10765660/roulette-wheel-selection-procedure
 [2]: https://arxiv.org/ftp/arxiv/papers/1308/1308.4675.pdf
+[3]: https://www.google.com/search?safe=active&source=hp&ei=5XkwXpDkD7mGwPAPzKa7wA4&q=sin%28x%5E2%2By%5E2%29&oq=sin%28x%5E2%2By%5E2%29&gs_l=psy-ab.3..0i19l5j0i30i19l2j0i10i30i19j0i5i30i19l2.1548.10162..10481...1.0..1.100.1109.12j1......0....1..gws-wiz.......0i131j0j0i3j0i30j0i10i30j0i8i30j0i8i10i30.SVLfJELg2vY&ved=0ahUKEwjQ6un_8qbnAhU5AxAIHUzTDugQ4dUDCAY&uact=5
