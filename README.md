@@ -142,7 +142,7 @@ Leave the mutation for vanilla cases but if the algorithm seems to stabilize (ne
 ## Catastrophe
 As in nature (like 65 million years ago) catastrophes happen which will drastically change the outcome of evolution. So an idea can be to introduce a catastrophe which will completely remove majority of the population and regenerate it if the algorithm seems to stabilize.
 
-##Combination
+## Combination
 Combine the previous ideas.
 
 # Contribute
