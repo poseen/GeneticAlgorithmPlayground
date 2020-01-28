@@ -69,53 +69,81 @@ Done.
 ## Main concept
 The main concept of the algorithm:
 
-1. **Generate a population randomly**:
-An initial population will be generated with random properties.
+![alt text](..\doc\algorithm.png "Algorithm flowchart")
 
-1. **Calculate fitness of every specimen.**
-Every specimens' fitness will be calculated and stored.
+### Generate population
+(Initialization) The algorithm will generate a fixed sized population (100) with random properties and will keep it at that level.
 
-1. **Iteration** *(Until [ESC] pressed)*
+### Calculate fitness
+(Iteration starts here.) The specimens' fitness will be re-calculated and stored in the beginning of every iteration.
+
+### Collect acceptable speciemens
+The acceptable specimens are collected. The acceptance criteria may be an exact equality check against the fitness value (when we are searching for specimens which totally satisfy our requirement) or we can define a tolerance if we are satisfied with some estimating result.
+
+### Selection and Hybridization
+Hybridize specimens based on their fitness. Specimens with higher fitness will have higher probability of hybridization. Algorithm will change every specimen with exactly one offspring, therefore will keep the size of population constant.
+
+The generation of hybridization pairs are made with the roulette-algorithm[1]. It may happen that a specimen will hybridize with itself.
    
-   1. **Collect acceptable speciemens**:
-   The acceptable specimens are collected. Maybe we were lucky and already found some acceptable solutions.
+### Mutation
+With a given probability of mutation the algorithm changes some properties in the population. The algorithm will take the number of population multiplied with the number of properties and randomly select the given percentage to modify.
+*Example:*
+4 specimens * 4 properties = 16
 
-   1. **Natural selection**:
-   Hybridize specimens based on their fitness. Specimens with higher fitness will have higher probability of hybridization. Algorithm will change every specimen with exactly one offspring.[1]
-   
-   1. **Mutation**:
-   With a given probability of mutation the algorithm changes some properties in the population. The algorithm will take the number of population multiplied with the number of properties and randomly select the given percentage to modify.
-   > *Example:*
-   >
-   > 100 specimens * 4 properties = 400
-   >
-   > Randomly chosen: 3, 6, 7
-   >
-   > ```
-   > Example: 2 specimens with 4-4 properties:
-   > 
-   > |     1st     |     2nd     |         ...
-   > | [ A B C D ] | [ A B C D ] |         ...
-   > |   1 2 3 4   |   5 6 7 8   |         ...
-   > |       *     |     * *     |         ...
-   >```
-   > So these will be changed:
-   >```
-   > (1st).C := random(-31, 30)
-   > (2nd).B := random(-31, 30)
-   > (2nd).C := random(-31, 30)
-   > ```
-   
-   1. **Fitness check**:
-   The fitness of every newly born and mutated offspring will be calculated and stored.
+ Therefore we have to shuffle the numbers between **0** and **15**.
 
-## Problems
-This algorithm is not working all the time. Sometimes it will find hundreds of solutions in a few iterations, sometimes just a few, sometimes 0. It really depends on the randomly generated initial population. To make it better there are options how to improve:
-1. **Better start population**: Try to generate an initial population which is not that random and will have a great variance so the hybridization process won't stuck in a ditch.
-1. **Stronger mutation**: Make the mutation stronger with bigger probability.
-1. **Strong mutation after stabilization**: Leave the mutation for vanilla cases but if the algorithm seems to stabilize (new items are not found anymore or just a few new found in every iteration) then mutate the population's greater percentage.
-1. **Cause catastrophe**: As in nature (like 65 million years ago) introduce a catastrophe which will completely remove majority of the population and regenerate it if the algorithm seems to stabilize.
-1. **Combination**: Combine the previous ideas.
+ Let's assume the first 4 items in the shuffled list of numbers: 2, 5, 6, 15.
+
+ P<sub>0</sub>...P<sub>3</sub> represents the properties of the specimens, and let's put the specimens in order and assign numbers to the propertiesin the following manner:
+
+ ![alt text](..\doc\mutation.png "Mutation example")
+
+Formula to be used:
+```
+[generated num.] mod [# of properties] = [Property ID]
+[generated num.] div [# of properties] = [Specimen ID]
+```
+
+| Generated number | Specimen ID | Property ID |
+|:----------------:|:-----------:|:-----------:|
+| **2**            | 0           | 2           |
+| **5**            | 1           | 1           |
+| **6**            | 1           | 2           |
+| **15**           | 3           | 3           |
+
+Therefore the following mutation will happen:
+ - Specimen<sub>0</sub>.P<sub>2</sub> = random(-30, 31)
+ - Specimen<sub>1</sub>.P<sub>1</sub> = random(-30, 31)
+ - Specimen<sub>1</sub>.P<sub>2</sub> = random(-30, 31)
+ - Specimen<sub>3</sub>.P<sub>3</sub> = random(-30, 31)
+
+### Terminal Condition
+This algorithm is stable in the perspective of memory and CPU usage because the population is kept on a constant level. Therefore the algorithm may run as long as we would like, but we can define any terminal condition:
+- Run algorithm until key pressed
+- We find the first accetpable specimen
+- We find a given quantity of specimens
+- Algorithm is stabilizing and can't find more specimens or just slowly
+
+### Return found specimens
+We return the found specimens.
+
+# Problems with this algorithm concept
+This algorithm is not working well all the time. Sometimes it will find hundreds of solutions in a few iterations, sometimes just a few, sometimes 0. It really depends on the randomly generated initial population, and the mutation probability. To make it better there are options how to improve:
+
+## Better start population
+It may happen the start population contains wrong specimens which won't be able to hybridize to generate better offsprings. You will see this when from the beginning the algorithm doesn't find enough (or any) acceptable specimens. To solve this you may try to implement a better population generator which will generate specimens which will better suite the hybridization and will contain some genes which will make their way to the acceptable specimens.
+
+## Stronger mutation
+Maybe the mutation isn't strong or isn't probable enough. Make the mutation stronger with bigger probability.
+
+## Strong mutation after stabilization
+Leave the mutation for vanilla cases but if the algorithm seems to stabilize (new items are not found anymore or just a few new found in every 10th or 100th of iterations) then mutate the population's greater percentage with stronger mutation.
+
+## Catastrophe
+As in nature (like 65 million years ago) catastrophes happen which will drastically change the outcome of evolution. So an idea can be to introduce a catastrophe which will completely remove majority of the population and regenerate it if the algorithm seems to stabilize.
+
+##Combination
+Combine the previous ideas.
 
 # Contribute
 No contribution is needed yet, this solution is just for fun, but if you find some bugs or wrongly phased parts then you can create a branch and send a pull request, I *may* take a look at it.
