@@ -1,3 +1,5 @@
+(Not up-to-date)
+
 # Introduction 
 Some fun with genetic algorithms. We will try to find the solution to a simple formula, like:
 

@@ -19,37 +19,45 @@ namespace TestApplication.UI
         private readonly Image _bgImage;
         private readonly Random _random = new Random();
 
-        // Ripple - sin(x² + y²)
-        // return Math.Sin(x * x + y * y);
-
-        // Hyperbolic paraboloid https://en.wikipedia.org/wiki/Paraboloid#Hyperbolic_paraboloid
-        // return x*x - y*y;
-
-        // Monkey-saddle https://en.wikipedia.org/wiki/Monkey_saddle
-        // return x * x * x - 3 * x * y * y;
-
-        // sin(x²) * cos(y²)
-        // return (Math.Sin(x * x) * Math.Cos(y * y)) - 0.5d;
-
-        /* 
-         * ************************************************************************************* *
-         * Next examples from/based on: https://www.benjoffe.com/code/tools/functions3d/examples *
-         * ***************************************************************************************
-         */
-
-        // Bumps
-        // return (Math.Sin(5 * x) * Math.Cos(5 * y)) / 5.0d;
-
-        // Intersecting Fences
-        // return 0.75d / Math.Exp(Math.Pow((x * 5), 2) * Math.Pow((y * 5), 2)) - 0.1d;
-
         private enum Function
         {
+            /// <summary>
+            /// Ripple
+            /// f(x, y) = sin(x² + y²)
+            /// </summary>
             Ripple,
+
+            /// <summary>
+            /// Hyperbolic paraboloid
+            /// f(x, y) = x² - y²
+            /// https://en.wikipedia.org/wiki/Paraboloid#Hyperbolic_paraboloid
+            /// </summary>
             HyperbolicParaboloid,
+
+            /// <summary>
+            /// Monkey-saddle
+            /// f(x, y) = x³ - -3xy²
+            /// https://en.wikipedia.org/wiki/Monkey_saddle
+            /// </summary>
             MonkeySaddle,
+
+            /// <summary>
+            /// f(x, y) = sin(x²) * cos(y²) - 5
+            /// </summary>
             Sinx2Cosy2Minus5,
+
+            /// <summary>
+            /// Bumps
+            /// f(x, y) = (sin(5x) * c(5y)) / 5;
+            /// From/based on: https://www.benjoffe.com/code/tools/functions3d/examples
+            /// </summary>
             Bumps,
+
+            /// <summary>
+            /// Intersecting Fences
+            /// f(x, y) = (0.75 / exp(5x² * 5y²)) - 0.1d;
+            /// From/based on: https://www.benjoffe.com/code/tools/functions3d/examples
+            /// </summary>
             IntersectingFences
         }
 
