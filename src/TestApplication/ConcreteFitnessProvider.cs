@@ -42,7 +42,18 @@ namespace TestApplication
 
         private double FitnessFunction(double x, double y)
         {
+            // Ripple
             return Math.Sin(x * x + y * y);
+
+            /* 
+             * Other examples from/based on: https://www.benjoffe.com/code/tools/functions3d/examples 
+             */
+
+            // Bumps
+            // return (Math.Sin(5 * x) * Math.Cos(5 * y)) / 5.0d;
+
+            // Intersecting Fences
+            // return 0.75d / Math.Exp(Math.Pow((x * 5), 2) * Math.Pow((y * 5), 2)) - 0.1d;
         }
     }
 }
