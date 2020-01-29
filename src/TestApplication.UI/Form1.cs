@@ -102,7 +102,7 @@ namespace TestApplication.UI
             var builder = new ConcretePopulationBuilder();
 
             // Used to define the fitness function.
-            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function);
+            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function, double.Parse(textboxAcceptingDistance.Text));
 
             // The selector - nature's laws - which will select who will mate with who and what children will be born:
             var selector = new ConcretePopulationSelector(fitnessProvider);
@@ -122,7 +122,7 @@ namespace TestApplication.UI
             var builder = new ConcretePopulationBuilder();
 
             // Used to define the fitness function.
-            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function);
+            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function, double.Parse(textboxAcceptingDistance.Text));
 
             // The selector - nature's laws - which will select who will mate with who and what children will be born:
             var selector = new ConcretePopulationSelector(fitnessProvider);
@@ -169,8 +169,8 @@ namespace TestApplication.UI
             var g = Graphics.FromImage(_image);
 
             bg.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
-            bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
-            bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+            //bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
+            //bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
 
             var cnt = 0;
             int iterationsUntilFound10Specimens = 0;
@@ -238,8 +238,8 @@ namespace TestApplication.UI
             var g = Graphics.FromImage(_image);
 
             bg.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
-            bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
-            bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+            //bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
+            //bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
 
             var cnt = 0;
             int iterationsUntilFound10Specimens = 0;

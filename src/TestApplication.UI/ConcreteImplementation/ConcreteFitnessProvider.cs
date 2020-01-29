@@ -9,10 +9,12 @@ namespace TestApplication.UI.ConcreteImplementation
     public class ConcreteFitnessProvider : IFitnessProvider<ConcreteSpecimen, double>
     {
         private readonly Func<double, double, double> _function;
+        private readonly double _acceptingDistance;
 
-        public ConcreteFitnessProvider(Func<double, double, double> functionToBeExamined)
+        public ConcreteFitnessProvider(Func<double, double, double> functionToBeExamined, double acceptingDistance)
         {
             _function = functionToBeExamined;
+            _acceptingDistance = acceptingDistance;
         }
 
         public void ReCalculateFitness(ref IWeightedList<ConcreteSpecimen, double> population)
@@ -36,7 +38,7 @@ namespace TestApplication.UI.ConcreteImplementation
 
         public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen, double> population)
         {
-            return population.Where(x => 1 - x.Weight < 0.1d)
+            return population.Where(x => 1 - x.Weight < _acceptingDistance)
                              .Select(x => x.Item)
                              .ToList()
                              .AsReadOnly();
