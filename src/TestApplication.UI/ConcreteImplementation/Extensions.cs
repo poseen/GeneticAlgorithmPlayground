@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public static class Extensions
     {

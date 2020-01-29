@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using TestApplication.GeneticAlgorithm.DataStructures;
+using TestApplication.GeneticAlgorithm.Interfaces;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcretePopulationMutator : IPopulationMutator<ConcreteSpecimen, double>
     {
@@ -34,8 +35,8 @@ namespace TestApplication
 
                 switch (propertyIndex)
                 {
-                    case 0: x = -4 + random.NextDouble() * 8; break;
-                    case 1: y = -4 + random.NextDouble() * 8; break;
+                    case 0: x = -2 + random.NextDouble() * 4; break;
+                    case 1: y = -2 + random.NextDouble() * 4; break;
                     default: throw new ArgumentOutOfRangeException(nameof(propertyIndex));
                 }
 

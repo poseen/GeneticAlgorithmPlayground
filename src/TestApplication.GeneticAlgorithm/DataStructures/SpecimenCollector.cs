@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TestApplication.GeneticAlgorithm.DataStructures;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm
 {
     public class SpecimenCollector<TSpecimen> : ISpecimenCollector<TSpecimen>
     {

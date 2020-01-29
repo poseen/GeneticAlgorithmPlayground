@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.DataStructures
 {
     public interface ISpecimenCollector<TSpecimen>
     {

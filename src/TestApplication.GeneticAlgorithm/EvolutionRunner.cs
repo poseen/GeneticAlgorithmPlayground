@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using TestApplication.GeneticAlgorithm.DataStructures;
+using TestApplication.GeneticAlgorithm.Interfaces;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm
 {
-    public class EvolutionRunner<TSpecimen, TWeight> : IEvolutionRunner
-        where TWeight : IComparable<TWeight>
+    public class EvolutionRunner<TSpecimen, TWeight> : IEvolutionRunner<TSpecimen> where TWeight : IComparable<TWeight>
     {
         private readonly IPopulationBuilder<TSpecimen, TWeight> _populationBuilder;
         private readonly IPopulationSelector<TSpecimen, TWeight> _populationSelector;
@@ -14,7 +16,10 @@ namespace TestApplication
 
         private IWeightedList<TSpecimen, TWeight> _population;
 
-        public EvolutionRunner(IPopulationBuilder<TSpecimen, TWeight> populationBuilder, IPopulationSelector<TSpecimen, TWeight> populationSelector, IPopulationMutator<TSpecimen, TWeight> populationMutator, IFitnessProvider<TSpecimen, TWeight> fitnessProvider)
+        public EvolutionRunner(IPopulationBuilder<TSpecimen, TWeight> populationBuilder,
+                               IPopulationSelector<TSpecimen, TWeight> populationSelector,
+                               IPopulationMutator<TSpecimen, TWeight> populationMutator,
+                               IFitnessProvider<TSpecimen, TWeight> fitnessProvider)
         {
             _populationBuilder = populationBuilder;
             _populationSelector = populationSelector;
@@ -25,9 +30,13 @@ namespace TestApplication
 
         public IReadOnlyCollection<TSpecimen> Result => _specimenCollector.GetSpecimens();
 
-        public void Initialize()
+        public IReadOnlyCollection<TSpecimen> Population => _population.Select(x => x.Item)
+                                                                       .ToList()
+                                                                       .AsReadOnly();
+
+        public void Initialize(int starterPopulationSize)
         {
-            _population = _populationBuilder.Build(100);
+            _population = _populationBuilder.Build(starterPopulationSize);
             _fitnessProvider.ReCalculateFitness(ref _population);
         }
 

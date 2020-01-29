@@ -1,6 +1,7 @@
 ﻿using System;
+using TestApplication.GeneticAlgorithm.DataStructures;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.Interfaces
 {
     public interface IPopulationBuilder<TSpecimen, TWeight> where TWeight : IComparable<TWeight>
     {

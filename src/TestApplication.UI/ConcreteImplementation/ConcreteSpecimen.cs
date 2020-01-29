@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcreteSpecimen : IClonable<ConcreteSpecimen>, ICloneable, IEquatable<ConcreteSpecimen>
     {
@@ -15,11 +15,11 @@ namespace TestApplication
         {
             get
             {
-                return key switch
+                switch (key)
                 {
-                    0 => X,
-                    1 => Y,
-                    _ => throw new IndexOutOfRangeException("Index has to be between 0-1 inclusive."),
+                    case 0: return X;
+                    case 1: return Y;
+                    default: throw new IndexOutOfRangeException("Index has to be between 0-1 inclusive.");
                 };
             }
         }
@@ -30,7 +30,7 @@ namespace TestApplication
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(X, Y);
+            return X.GetHashCode() ^ Y.GetHashCode() ^ 155;
         }
 
         public override string ToString()
@@ -48,7 +48,7 @@ namespace TestApplication
             return Clone();
         }
 
-        public bool Equals([AllowNull] ConcreteSpecimen other)
+        public bool Equals(ConcreteSpecimen other)
         {
             if(other is null)
             {
@@ -63,7 +63,7 @@ namespace TestApplication
             return X.Equals5Precision(other.X) && Y.Equals5Precision(other.Y);
         }
 
-        public override bool Equals([AllowNull]object obj)
+        public override bool Equals(object obj)
         {
             if (obj is null)
             {

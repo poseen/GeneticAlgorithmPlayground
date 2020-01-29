@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using TestApplication.GeneticAlgorithm.DataStructures;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.Interfaces
 {
     public interface IFitnessProvider<TSpecimen, TWeight>
         where TWeight : IComparable<TWeight>

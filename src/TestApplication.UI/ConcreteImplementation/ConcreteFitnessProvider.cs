@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestApplication.GeneticAlgorithm.DataStructures;
+using TestApplication.GeneticAlgorithm.Interfaces;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcreteFitnessProvider : IFitnessProvider<ConcreteSpecimen, double>
     {
-        private readonly int _target;
-        
-        public ConcreteFitnessProvider(int targetFunctionValue)
+        private readonly Func<double, double, double> _function;
+
+        public ConcreteFitnessProvider(Func<double, double, double> functionToBeExamined)
         {
-            _target = targetFunctionValue;
+            _function = functionToBeExamined;
         }
 
         public void ReCalculateFitness(ref IWeightedList<ConcreteSpecimen, double> population)
@@ -34,7 +36,7 @@ namespace TestApplication
 
         public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen, double> population)
         {
-            return population.Where(x => 1 - x.Weight < 0.01d)
+            return population.Where(x => 1 - x.Weight < 0.1d)
                              .Select(x => x.Item)
                              .ToList()
                              .AsReadOnly();
@@ -42,18 +44,7 @@ namespace TestApplication
 
         private double FitnessFunction(double x, double y)
         {
-            // Ripple
-            return Math.Sin(x * x + y * y);
-
-            /* 
-             * Other examples from/based on: https://www.benjoffe.com/code/tools/functions3d/examples 
-             */
-
-            // Bumps
-            // return (Math.Sin(5 * x) * Math.Cos(5 * y)) / 5.0d;
-
-            // Intersecting Fences
-            // return 0.75d / Math.Exp(Math.Pow((x * 5), 2) * Math.Pow((y * 5), 2)) - 0.1d;
+            return _function(x, y);
         }
     }
 }

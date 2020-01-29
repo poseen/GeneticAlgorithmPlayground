@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestApplication.GeneticAlgorithm.DataStructures;
+using TestApplication.GeneticAlgorithm.Interfaces;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcretePopulationSelector : IPopulationSelector<ConcreteSpecimen, double>
     {

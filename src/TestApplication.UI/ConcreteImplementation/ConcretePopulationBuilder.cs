@@ -1,6 +1,8 @@
 ﻿using System;
+using TestApplication.GeneticAlgorithm.DataStructures;
+using TestApplication.GeneticAlgorithm.Interfaces;
 
-namespace TestApplication
+namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcretePopulationBuilder : IPopulationBuilder<ConcreteSpecimen, double>
     {

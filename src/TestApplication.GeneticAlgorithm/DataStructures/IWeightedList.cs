@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.DataStructures
 {
     public interface IWeightedList<TSpecimen, TWeight> : ICollection<WeightedItem<TSpecimen, TWeight>>, IEnumerable<WeightedItem<TSpecimen, TWeight>>, IEnumerable, IList<WeightedItem<TSpecimen, TWeight>>, IReadOnlyCollection<WeightedItem<TSpecimen, TWeight>>, IReadOnlyList<WeightedItem<TSpecimen, TWeight>>, ICollection, IList
         where TWeight : IComparable<TWeight>

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.DataStructures
 {
     public class WeightedItem<TItem, TWeight> : IComparable<WeightedItem<TItem, TWeight>>
         where TWeight : IComparable<TWeight>
@@ -16,7 +15,7 @@ namespace TestApplication
 
         public TWeight Weight { get; set; }
 
-        public int CompareTo([AllowNull] WeightedItem<TItem, TWeight> other)
+        public int CompareTo(WeightedItem<TItem, TWeight> other)
         {
             return this.Weight.CompareTo(other.Weight);
         }

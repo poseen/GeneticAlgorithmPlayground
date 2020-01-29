@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestApplication
+namespace TestApplication.GeneticAlgorithm.DataStructures
 {
     public class WeightedList<TSpecimen, TWeight> : IWeightedList<TSpecimen, TWeight>
         where TWeight : IComparable<TWeight>
