@@ -35,8 +35,8 @@ namespace TestApplication.UI.ConcreteImplementation
 
                 switch (propertyIndex)
                 {
-                    case 0: x = -2 + random.NextDouble() * 4; break;
-                    case 1: y = -2 + random.NextDouble() * 4; break;
+                    case 0: x = -4 + random.NextDouble() * 8; break;
+                    case 1: y = -4 + random.NextDouble() * 8; break;
                     default: throw new ArgumentOutOfRangeException(nameof(propertyIndex));
                 }
 

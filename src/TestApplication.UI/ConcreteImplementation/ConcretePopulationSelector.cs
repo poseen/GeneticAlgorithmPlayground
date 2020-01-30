@@ -69,8 +69,42 @@ namespace TestApplication.UI.ConcreteImplementation
                     }
                 }
 
-                var offSpring = new ConcreteSpecimen(parents[random.Next(0, 2)].X, parents[random.Next(0, 2)].Y);
-                
+                // Default case: let's just randomly select which gene is coming from which parent...
+                var x = parents[random.Next(0, 2)].X;
+                var y = parents[random.Next(0, 2)].Y;
+
+                switch (random.Next(3))
+                {
+                    case 0:
+                        // Let's take the arithmetic mean ("average") of the parent's genes
+                        x = (parents[0].X + parents[1].X) / 2.0d;
+                        y = (parents[0].Y + parents[1].Y) / 2.0d;
+                        break;
+
+                    case 1:
+                        // Let's take the geometric mean of the parent's genes
+                        x = Math.Pow((parents[0].X * parents[1].X), 0.5d);
+                        y = Math.Pow((parents[0].Y * parents[1].Y), 0.5d);
+
+                        // If any calculation returned a not a number, then we fall back to average.
+                        if(double.IsNaN(x))
+                        {
+                            x = (parents[0].X + parents[1].X) / 2.0d;
+                        }
+
+                        if (double.IsNaN(y))
+                        {
+                            y = (parents[0].Y + parents[1].Y) / 2.0d;
+                        }
+                        break;
+
+                    default:
+                        // Default case.
+                        break;
+                }
+
+                var offSpring = new ConcreteSpecimen(x, y);
+
                 population.Add(new WeightedItem<ConcreteSpecimen, double>(offSpring, 0));
             }
         }
