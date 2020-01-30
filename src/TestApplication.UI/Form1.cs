@@ -170,6 +170,16 @@ namespace TestApplication.UI
 
         private void StartAlgorithm()
         {
+            DoSafe(() =>
+            {
+                btnStartEvolution.Enabled = false;
+                btnStartComparisonOfAlgorithms.Enabled = false;
+                numericNumberOfIterations.Enabled = false;
+                numericStartPopulationSize.Enabled = false;
+                comboboxTargetFunction.Enabled = false;
+                textboxAcceptingDistance.Enabled = false;
+            });
+
             var algo = Build();
             algo.Initialize((int)numericStartPopulationSize.Value);
 
@@ -199,10 +209,21 @@ namespace TestApplication.UI
                     labelIterationsUntilFirst10FoundByEvolution.Refresh();
                     labelNumberOfFoundSpecimenByEvolution.Refresh();
 
-                    labelStatistics.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
-                    labelStatistics.Refresh();
+                    labelIterationInfoForEvolutionAlgorithm.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
+                    labelIterationInfoForEvolutionAlgorithm.Refresh();
                 }));
             }
+
+            DoSafe(() =>
+            {
+                btnStartEvolution.Enabled = true;
+                
+                numericNumberOfIterations.Enabled = numericStartPopulationSize.Enabled
+                    = comboboxTargetFunction.Enabled
+                    = textboxAcceptingDistance.Enabled
+                    = btnStartComparisonOfAlgorithms.Enabled
+                    = btnStartEvolution.Enabled && btnStartEvolution.Enabled;
+            });
         }
 
         private void RefreshEvolutionPreview(IEnumerable<ConcreteSpecimen> population, IEnumerable<ConcreteSpecimen> acceptedSpecimens)
@@ -299,6 +320,16 @@ namespace TestApplication.UI
 
         private void StartRandomAlgo()
         {
+            DoSafe(() =>
+            {
+                btnStartRandomAlgorithm.Enabled = false;
+                btnStartComparisonOfAlgorithms.Enabled = false;
+                numericNumberOfIterations.Enabled = false;
+                numericStartPopulationSize.Enabled = false;
+                comboboxTargetFunction.Enabled = false;
+                textboxAcceptingDistance.Enabled = false;
+            });
+
             var algo = BuildRandomAlgo();
             algo.Initialize((int)numericStartPopulationSize.Value);
 
@@ -328,10 +359,21 @@ namespace TestApplication.UI
                     labelIterationsUntilFirst10FoundByRandom.Refresh();
                     labelNumberOfFoundSpecimenByRandom.Refresh();
 
-                    labelStatistics.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
-                    labelStatistics.Refresh();
+                    labelIterationInfoForRandomAlgorithm.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
+                    labelIterationInfoForRandomAlgorithm.Refresh();
                 }));
             }
+
+            DoSafe(() =>
+            {
+                btnStartRandomAlgorithm.Enabled = true;
+
+                numericNumberOfIterations.Enabled = numericStartPopulationSize.Enabled
+                = comboboxTargetFunction.Enabled
+                = textboxAcceptingDistance.Enabled
+                = btnStartComparisonOfAlgorithms.Enabled
+                = btnStartEvolution.Enabled && btnStartEvolution.Enabled;
+            });
         }
 
         private void DoSafe(Action action)
@@ -380,6 +422,14 @@ namespace TestApplication.UI
             var t2 = new Task(() => StartAlgorithm());
             t1.Start();
             t2.Start();
+        }
+
+        private void textboxAcceptingDistance_TextChanged(object sender, EventArgs e)
+        {
+            var isParsable = double.TryParse(textboxAcceptingDistance.Text, out _);
+
+            btnStartComparisonOfAlgorithms.Enabled = btnStartEvolution.Enabled = btnStartRandomAlgorithm.Enabled = isParsable;
+            textboxAcceptingDistance.BackColor = isParsable ? SystemColors.Window : Color.Red;
         }
     }
 }

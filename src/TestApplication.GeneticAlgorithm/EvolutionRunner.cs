@@ -42,6 +42,7 @@ namespace TestApplication.GeneticAlgorithm
 
         public void Iterate()
         {
+
             _populationSelector.NaturalSelection(ref _population);
             _populationMutator.Mutate(ref _population);
             _fitnessProvider.ReCalculateFitness(ref _population);

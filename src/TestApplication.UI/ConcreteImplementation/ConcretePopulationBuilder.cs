@@ -16,7 +16,7 @@ namespace TestApplication.UI.ConcreteImplementation
             var result = new WeightedList<ConcreteSpecimen, double>(sizeOfStarterPopulation);
             for (var i = 0; i < sizeOfStarterPopulation; i++)
             {
-                var cell = new ConcreteSpecimen(-4 + random.NextDouble() * 8, -4 + random.NextDouble() * 8);
+                var cell = new ConcreteSpecimen(-2 + random.NextDouble() * 4, -2 + random.NextDouble() * 4);
                 result.Add(new WeightedItem<ConcreteSpecimen, double>(cell, 0));
             }
 
