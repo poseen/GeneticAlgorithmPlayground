@@ -9,15 +9,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestApplication;
 using TestApplication.GeneticAlgorithm;
+using TestApplication.GeneticAlgorithm.Interfaces;
 using TestApplication.UI.ConcreteImplementation;
 
 namespace TestApplication.UI
 {
     public partial class MainForm : Form
     {
-        private readonly Image _image;
-        private readonly Image _bgImage;
-        private readonly Random _random = new Random();
+        const int imgWidth = 600;
+        const int imgHeight = 600;
+
+        private readonly Image _imageEvolutionPreviewImage;
+        private readonly Image _bgImgEvolutionPreviewImage;
+
+        private readonly Image _imageRandomPreviewImage;
+        private readonly Image _bgImgRandomPreviewImage;
 
         private enum Function
         {
@@ -87,8 +93,10 @@ namespace TestApplication.UI
         public MainForm()
         {
             InitializeComponent();
-            _image = pictureboxPreview.Image = new Bitmap(600, 600);
-            _bgImage = pictureboxPreview.BackgroundImage = new Bitmap(600, 600);
+            _imageEvolutionPreviewImage = pictureboxEvolutionPreview.Image = new Bitmap(imgWidth, imgHeight);
+            _bgImgEvolutionPreviewImage = pictureboxEvolutionPreview.BackgroundImage = new Bitmap(imgWidth, imgHeight);
+            _imageRandomPreviewImage = pictureboxRandomPreview.Image = new Bitmap(imgWidth, imgHeight);
+            _bgImgRandomPreviewImage = pictureboxRandomPreview.BackgroundImage = new Bitmap(imgWidth, imgHeight);
 
             _functions = new Dictionary<int, FunctionDescription>()
             {
@@ -104,13 +112,13 @@ namespace TestApplication.UI
             comboboxTargetFunction.SelectedIndex = 0;
         }
 
-        private EvolutionRunner<ConcreteSpecimen, double> Build()
+        private IEvolutionRunner<ConcreteSpecimen> Build()
         {
             // Used to build the starter population:
             var builder = new ConcretePopulationBuilder();
 
             // Used to define the fitness function.
-            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function, double.Parse(textboxAcceptingDistance.Text));
+            var fitnessProvider = new ConcreteFitnessProvider(GetSelectedFunction().Function, GetAcceptingDistance());
 
             // The selector - nature's laws - which will select who will mate with who and what children will be born:
             var selector = new ConcretePopulationSelector(fitnessProvider);
@@ -124,61 +132,46 @@ namespace TestApplication.UI
             return evolutionAlgorithm;
         }
 
-        private ConcreteRandomAlgorithm<ConcreteSpecimen, double> BuildRandomAlgo()
+        private FunctionDescription GetSelectedFunction()
+        {
+            if (comboboxTargetFunction.InvokeRequired)
+                return (FunctionDescription)this.Invoke(new Func<FunctionDescription>(() => comboboxTargetFunction.SelectedItem as FunctionDescription));
+            else
+                return comboboxTargetFunction.SelectedItem as FunctionDescription;
+        }
+
+        private double GetAcceptingDistance()
+        {
+            if (textboxAcceptingDistance.InvokeRequired)
+                return (double)this.Invoke(new Func<double>(() => double.Parse(textboxAcceptingDistance.Text)));
+            else
+                return double.Parse(textboxAcceptingDistance.Text);
+        }
+
+        private IEvolutionRunner<ConcreteSpecimen> BuildRandomAlgo()
         {
             // Used to build the starter population:
             var builder = new ConcretePopulationBuilder();
 
             // Used to define the fitness function.
-            var fitnessProvider = new ConcreteFitnessProvider((comboboxTargetFunction.SelectedItem as FunctionDescription).Function, double.Parse(textboxAcceptingDistance.Text));
-
-            // The selector - nature's laws - which will select who will mate with who and what children will be born:
-            var selector = new ConcretePopulationSelector(fitnessProvider);
-
-            // The mutator, which will mutate the population slightly to enable evolution:
-            var mutator = new ConcretePopulationMutator();
+            var fitnessProvider = new ConcreteFitnessProvider(GetSelectedFunction().Function, GetAcceptingDistance());
 
             // The manager of the whole algorithm, it accepts the builder, selector and mutator objects as plugins. (See Strategy pattern.)
-            var evolutionAlgorithm = new ConcreteRandomAlgorithm<ConcreteSpecimen, double>(builder, selector, mutator, fitnessProvider);
+            var evolutionAlgorithm = new ConcreteRandomAlgorithm<ConcreteSpecimen, double>(builder, fitnessProvider);
 
             return evolutionAlgorithm;
         }
 
         private void btnStartStop_Click(object sender, EventArgs e)
         {
-            StartAlgorithm();
+            var t = new Task(() => StartAlgorithm());
+            t.Start();
         }
 
         private void StartAlgorithm()
         {
-            const int imgWidth = 600;
-            const int imgHeight = 600;
-
             var algo = Build();
             algo.Initialize((int)numericStartPopulationSize.Value);
-
-            var rect = new Rectangle(0, 0, imgWidth, imgHeight);
-
-            var leftTop = Translate(-1, 1, imgWidth, imgHeight);
-            var leftMiddle = Translate(-1, 0, imgWidth, imgHeight);
-            var leftBottom = Translate(-1, -1, imgWidth, imgHeight);
-
-            var rightTop = Translate(1, 1, imgWidth, imgHeight);
-            var rightMiddle = Translate(1, 0, imgWidth, imgHeight);
-            var rightBottom = Translate(1, -1, imgWidth, imgHeight);
-
-            var topMiddle = Translate(0, 1, imgWidth, imgHeight);
-            var bottomMiddle = Translate(0, -1, imgWidth, imgHeight);
-
-            var b = Brushes.GreenYellow;
-            var b2 = Brushes.Red;
-
-            var bg = Graphics.FromImage(_bgImage);
-            var g = Graphics.FromImage(_image);
-
-            bg.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
-            //bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
-            //bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
 
             var cnt = 0;
             int iterationsUntilFound10Specimens = 0;
@@ -188,21 +181,7 @@ namespace TestApplication.UI
                 cnt++;
                 algo.Iterate();
 
-                g.Clear(Color.Transparent);
-
-                // Print out found specimens:
-                foreach (var item in algo.Population)
-                {
-                    var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
-                    g.FillRectangle(b, position.x-1, position.y-1, 2, 2);
-                }
-
-                // Print out found specimens:
-                foreach (var item in algo.Result)
-                {
-                    var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
-                    g.FillRectangle(b2, position.x - 1, position.y - 1, 2, 2);
-                }
+                DoSafe(new Action(() => RefreshEvolutionPreview(algo.Population, algo.Result)));
 
                 var calculationForOneSpecimen = (cnt * algo.Population.Count) / (algo.Result.Count + 1);
 
@@ -211,43 +190,117 @@ namespace TestApplication.UI
                     iterationsUntilFound10Specimens = cnt;
                 }
 
-                labelStatistics.Text = $"It.#: {cnt}, Found: {algo.Result.Count}, # of calc: {cnt * algo.Population.Count}. Avg calc/specimen: {calculationForOneSpecimen}. Iterations until first 10: {iterationsUntilFound10Specimens}";
-                labelStatistics.Refresh();
+                DoSafe(new Action(() =>
+                {
+                    labelAverageCalculationPerSpecimenByEvolution.Text = $"{calculationForOneSpecimen}";
+                    labelIterationsUntilFirst10FoundByEvolution.Text = $"{iterationsUntilFound10Specimens}";
+                    labelNumberOfFoundSpecimenByEvolution.Text = $"{algo.Result.Count}";
+                    labelAverageCalculationPerSpecimenByEvolution.Refresh();
+                    labelIterationsUntilFirst10FoundByEvolution.Refresh();
+                    labelNumberOfFoundSpecimenByEvolution.Refresh();
 
-                pictureboxPreview.Refresh();
+                    labelStatistics.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
+                    labelStatistics.Refresh();
+                }));
             }
         }
 
-        private void StartRandomAlgo()
+        private void RefreshEvolutionPreview(IEnumerable<ConcreteSpecimen> population, IEnumerable<ConcreteSpecimen> acceptedSpecimens)
         {
-            const int imgWidth = 600;
-            const int imgHeight = 600;
-
-            var algo = BuildRandomAlgo();
-            algo.Initialize((int)numericStartPopulationSize.Value);
-
             var rect = new Rectangle(0, 0, imgWidth, imgHeight);
 
-            var leftTop = Translate(-1, 1, imgWidth, imgHeight);
             var leftMiddle = Translate(-1, 0, imgWidth, imgHeight);
-            var leftBottom = Translate(-1, -1, imgWidth, imgHeight);
-
-            var rightTop = Translate(1, 1, imgWidth, imgHeight);
             var rightMiddle = Translate(1, 0, imgWidth, imgHeight);
-            var rightBottom = Translate(1, -1, imgWidth, imgHeight);
-
             var topMiddle = Translate(0, 1, imgWidth, imgHeight);
             var bottomMiddle = Translate(0, -1, imgWidth, imgHeight);
 
             var b = Brushes.GreenYellow;
             var b2 = Brushes.Red;
 
-            var bg = Graphics.FromImage(_bgImage);
-            var g = Graphics.FromImage(_image);
+            var bg = Graphics.FromImage(_bgImgEvolutionPreviewImage);
+            var g = Graphics.FromImage(_imageEvolutionPreviewImage);
 
             bg.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
-            //bg.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
-            //bg.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+
+            g.Clear(Color.Transparent);
+
+            // Print out whole population
+            foreach (var item in population)
+            {
+                var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
+                g.FillRectangle(b, position.x - 1, position.y - 1, 2, 2);
+            }
+
+            // Print out found specimens:
+            foreach (var item in acceptedSpecimens)
+            {
+                var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
+                g.FillRectangle(b2, position.x - 1, position.y - 1, 2, 2);
+            }
+
+            g.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
+            g.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+
+            if(pictureboxEvolutionPreview.InvokeRequired)
+            {
+                pictureboxEvolutionPreview.Invoke(new Action(() => pictureboxEvolutionPreview.Refresh()));
+            }
+            else
+            {
+                pictureboxEvolutionPreview.Refresh();
+            }
+        }
+
+        private void RefreshRandomPreview(IEnumerable<ConcreteSpecimen> population, IEnumerable<ConcreteSpecimen> acceptedSpecimens)
+        {
+            var rect = new Rectangle(0, 0, imgWidth, imgHeight);
+
+            var leftMiddle = Translate(-1, 0, imgWidth, imgHeight);
+            var rightMiddle = Translate(1, 0, imgWidth, imgHeight);
+            var topMiddle = Translate(0, 1, imgWidth, imgHeight);
+            var bottomMiddle = Translate(0, -1, imgWidth, imgHeight);
+
+            var b = Brushes.GreenYellow;
+            var b2 = Brushes.Red;
+
+            var bg = Graphics.FromImage(_bgImgRandomPreviewImage);
+            var g = Graphics.FromImage(_imageRandomPreviewImage);
+
+            bg.FillRectangle(Brushes.MidnightBlue, rect.X, rect.Y, rect.Width, rect.Height);
+
+            g.Clear(Color.Transparent);
+
+            // Print out whole population
+            foreach (var item in population)
+            {
+                var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
+                g.FillRectangle(b, position.x - 1, position.y - 1, 2, 2);
+            }
+
+            // Print out found specimens:
+            foreach (var item in acceptedSpecimens)
+            {
+                var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
+                g.FillRectangle(b2, position.x - 1, position.y - 1, 2, 2);
+            }
+
+            g.DrawLine(Pens.White, leftMiddle.x, leftMiddle.y, rightMiddle.x, rightMiddle.y);
+            g.DrawLine(Pens.White, topMiddle.x, topMiddle.y, bottomMiddle.x, bottomMiddle.y);
+
+            if (pictureboxRandomPreview.InvokeRequired)
+            {
+                pictureboxRandomPreview.Invoke(new Action(() => pictureboxRandomPreview.Refresh()));
+            }
+            else
+            {
+                pictureboxRandomPreview.Refresh();
+            }
+        }
+
+        private void StartRandomAlgo()
+        {
+            var algo = BuildRandomAlgo();
+            algo.Initialize((int)numericStartPopulationSize.Value);
 
             var cnt = 0;
             int iterationsUntilFound10Specimens = 0;
@@ -257,21 +310,7 @@ namespace TestApplication.UI
                 cnt++;
                 algo.Iterate();
 
-                g.Clear(Color.Transparent);
-
-                // Print out found specimens:
-                foreach (var item in algo.Population)
-                {
-                    var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
-                    g.FillRectangle(b, position.x - 1, position.y - 1, 2, 2);
-                }
-
-                // Print out found specimens:
-                foreach (var item in algo.Result)
-                {
-                    var position = Translate(item.X / 2.0d, item.Y / 2.0d, imgWidth, imgHeight);
-                    g.FillRectangle(b2, position.x - 1, position.y - 1, 2, 2);
-                }
+                RefreshRandomPreview(algo.Population, algo.Result);
 
                 var calculationForOneSpecimen = (cnt * algo.Population.Count) / (algo.Result.Count + 1);
                 
@@ -280,11 +319,30 @@ namespace TestApplication.UI
                     iterationsUntilFound10Specimens = cnt;
                 }
 
+                DoSafe(new Action(() =>
+                {
+                    labelAverageCalculationPerSpecimenByRandom.Text = $"{calculationForOneSpecimen}";
+                    labelIterationsUntilFirst10FoundByRandom.Text = $"{iterationsUntilFound10Specimens}";
+                    labelNumberOfFoundSpecimenByRandom.Text = $"{algo.Result.Count}";
+                    labelAverageCalculationPerSpecimenByRandom.Refresh();
+                    labelIterationsUntilFirst10FoundByRandom.Refresh();
+                    labelNumberOfFoundSpecimenByRandom.Refresh();
 
-                labelStatistics.Text = $"It.#: {cnt}, Found: {algo.Result.Count}, # of calc: {cnt * algo.Population.Count}. Avg calc/specimen: {calculationForOneSpecimen}. Iterations until first 10: {iterationsUntilFound10Specimens}";
-                labelStatistics.Refresh();
+                    labelStatistics.Text = $"It.#: {cnt}, # of calc: {cnt * algo.Population.Count}.";
+                    labelStatistics.Refresh();
+                }));
+            }
+        }
 
-                pictureboxPreview.Refresh();
+        private void DoSafe(Action action)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(action);
+            }
+            else
+            {
+                action();
             }
         }
 
@@ -312,7 +370,16 @@ namespace TestApplication.UI
 
         private void btnStartStopRandomAlgo_Click(object sender, EventArgs e)
         {
-            StartRandomAlgo();
+            var t = new Task(() => StartRandomAlgo());
+            t.Start();
+        }
+
+        private void btnCompareStart_Click(object sender, EventArgs e)
+        {
+            var t1 = new Task(() => StartRandomAlgo());
+            var t2 = new Task(() => StartAlgorithm());
+            t1.Start();
+            t2.Start();
         }
     }
 }
