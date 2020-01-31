@@ -8,18 +8,18 @@ namespace TestApplication.GeneticAlgorithm
 {
     public class EvolutionRunner<TSpecimen, TWeight> : IEvolutionRunner<TSpecimen> where TWeight : IComparable<TWeight>
     {
-        private readonly IPopulationBuilder<TSpecimen, TWeight> _populationBuilder;
-        private readonly IPopulationSelector<TSpecimen, TWeight> _populationSelector;
-        private readonly IPopulationMutator<TSpecimen, TWeight> _populationMutator;
-        private readonly IFitnessProvider<TSpecimen, TWeight> _fitnessProvider;
+        private readonly IPopulationBuilder<TSpecimen> _populationBuilder;
+        private readonly IPopulationSelector<TSpecimen> _populationSelector;
+        private readonly IPopulationMutator<TSpecimen> _populationMutator;
+        private readonly IFitnessProvider<TSpecimen> _fitnessProvider;
         private readonly ISpecimenCollector<TSpecimen> _specimenCollector;
 
-        private IWeightedList<TSpecimen, TWeight> _population;
+        private IWeightedList<TSpecimen> _population;
 
-        public EvolutionRunner(IPopulationBuilder<TSpecimen, TWeight> populationBuilder,
-                               IPopulationSelector<TSpecimen, TWeight> populationSelector,
-                               IPopulationMutator<TSpecimen, TWeight> populationMutator,
-                               IFitnessProvider<TSpecimen, TWeight> fitnessProvider)
+        public EvolutionRunner(IPopulationBuilder<TSpecimen> populationBuilder,
+                               IPopulationSelector<TSpecimen> populationSelector,
+                               IPopulationMutator<TSpecimen> populationMutator,
+                               IFitnessProvider<TSpecimen> fitnessProvider)
         {
             _populationBuilder = populationBuilder;
             _populationSelector = populationSelector;

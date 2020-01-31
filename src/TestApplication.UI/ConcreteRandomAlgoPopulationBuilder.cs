@@ -4,9 +4,9 @@ using TestApplication.GeneticAlgorithm.Interfaces;
 
 namespace TestApplication.UI.ConcreteImplementation
 {
-    public class ConcretePopulationBuilder : IPopulationBuilder<ConcreteSpecimen>
+    public class ConcreteRandomAlgoPopulationBuilder : IPopulationBuilder<ConcreteSpecimen>
     {
-        public ConcretePopulationBuilder()
+        public ConcreteRandomAlgoPopulationBuilder()
         {
         }
 

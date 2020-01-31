@@ -6,16 +6,16 @@ using TestApplication.GeneticAlgorithm.Interfaces;
 
 namespace TestApplication.UI.ConcreteImplementation
 {
-    public class ConcretePopulationSelector : IPopulationSelector<ConcreteSpecimen, double>
+    public class ConcretePopulationSelector : IPopulationSelector<ConcreteSpecimen>
     {
-        private readonly IFitnessProvider<ConcreteSpecimen, double> _fitnessProvider;
+        private readonly IFitnessProvider<ConcreteSpecimen> _fitnessProvider;
 
-        public ConcretePopulationSelector(IFitnessProvider<ConcreteSpecimen, double> fitnessProvider)
+        public ConcretePopulationSelector(IFitnessProvider<ConcreteSpecimen> fitnessProvider)
         {
             _fitnessProvider = fitnessProvider;
         }
 
-        public void NaturalSelection(ref IWeightedList<ConcreteSpecimen, double> population)
+        public void NaturalSelection(ref IWeightedList<ConcreteSpecimen> population)
         {
             var originalPopulation = population.ToArray();
             population.Clear();
@@ -49,7 +49,7 @@ namespace TestApplication.UI.ConcreteImplementation
 
             for (var i = 0; i < count; i++)
             {
-                var parents = new ConcreteSpecimen[numberOfParents];
+                var parents = new WeightedItem<ConcreteSpecimen>[2];
                 for(var j = 0; j < numberOfParents; j++)
                 {
                     while (parents[j] == null)
@@ -63,49 +63,41 @@ namespace TestApplication.UI.ConcreteImplementation
 
                             if (number > currentFitness)
                             {
-                                parents[j] = item.Item;
+                                parents[j] = item;
                             }
                         }
                     }
                 }
 
-                // Default case: let's just randomly select which gene is coming from which parent...
-                var x = parents[random.Next(0, 2)].X;
-                var y = parents[random.Next(0, 2)].Y;
+                double x, y;
 
                 switch (random.Next(3))
                 {
                     case 0:
-                        // Let's take the arithmetic mean ("average") of the parent's genes
-                        x = (parents[0].X + parents[1].X) / 2.0d;
-                        y = (parents[0].Y + parents[1].Y) / 2.0d;
+                        x = (parents[0].Weight * parents[0].Item.X + parents[1].Weight * parents[1].Item.X) / (parents[0].Weight + parents[1].Weight);
+                        y = (parents[0].Weight * parents[0].Item.Y + parents[1].Weight * parents[1].Item.Y) / (parents[0].Weight + parents[1].Weight);
                         break;
 
                     case 1:
-                        // Let's take the geometric mean of the parent's genes
-                        x = Math.Pow((parents[0].X * parents[1].X), 0.5d);
-                        y = Math.Pow((parents[0].Y * parents[1].Y), 0.5d);
+                        x = (parents[0].Weight * parents[0].Item.X + parents[1].Weight * parents[1].Item.X) / (parents[0].Weight + parents[1].Weight);
+                        y = parents[random.Next(0, 2)].Item.Y;
+                        break;
 
-                        // If any calculation returned a not a number, then we fall back to average.
-                        if(double.IsNaN(x))
-                        {
-                            x = (parents[0].X + parents[1].X) / 2.0d;
-                        }
-
-                        if (double.IsNaN(y))
-                        {
-                            y = (parents[0].Y + parents[1].Y) / 2.0d;
-                        }
+                    case 2:
+                        x = parents[random.Next(0, 2)].Item.X;
+                        y = (parents[0].Weight * parents[0].Item.Y + parents[1].Weight * parents[1].Item.Y) / (parents[0].Weight + parents[1].Weight);
                         break;
 
                     default:
-                        // Default case.
+                        // Default case: let's just randomly select which gene is coming from which parent...
+                        x = parents[random.Next(0, 2)].Item.X;
+                        y = parents[random.Next(0, 2)].Item.Y;
                         break;
                 }
 
                 var offSpring = new ConcreteSpecimen(x, y);
 
-                population.Add(new WeightedItem<ConcreteSpecimen, double>(offSpring, 0));
+                population.Add(new WeightedItem<ConcreteSpecimen>(offSpring, 0));
             }
         }
     }

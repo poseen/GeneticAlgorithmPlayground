@@ -7,17 +7,17 @@ using TestApplication.GeneticAlgorithm;
 
 namespace TestApplication.UI.ConcreteImplementation
 {
-    class ConcreteRandomAlgorithm<TSpecimen, TWeight> : IEvolutionRunner<TSpecimen> where TWeight : IComparable<TWeight>
+    class ConcreteRandomAlgorithm<TSpecimen> : IEvolutionRunner<TSpecimen>
     {
-        private readonly IPopulationBuilder<TSpecimen, TWeight> _populationBuilder;
-        private readonly IFitnessProvider<TSpecimen, TWeight> _fitnessProvider;
+        private readonly IPopulationBuilder<TSpecimen> _populationBuilder;
+        private readonly IFitnessProvider<TSpecimen> _fitnessProvider;
         private readonly ISpecimenCollector<TSpecimen> _specimenCollector;
         
         private int _starterPopulationSize;
-        private IWeightedList<TSpecimen, TWeight> _population;
+        private IWeightedList<TSpecimen> _population;
 
-        public ConcreteRandomAlgorithm(IPopulationBuilder<TSpecimen, TWeight> populationBuilder,
-                               IFitnessProvider<TSpecimen, TWeight> fitnessProvider)
+        public ConcreteRandomAlgorithm(IPopulationBuilder<TSpecimen> populationBuilder,
+                               IFitnessProvider<TSpecimen> fitnessProvider)
         {
             _populationBuilder = populationBuilder;
             _fitnessProvider = fitnessProvider;

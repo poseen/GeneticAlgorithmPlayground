@@ -498,10 +498,12 @@
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.panelSettings);
             this.DoubleBuffered = true;
+            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1068, 490);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Genetic Algorithm Test";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.panelSettings.ResumeLayout(false);
             this.panelSettings.PerformLayout();
             this.groupboxStatistics.ResumeLayout(false);

@@ -54,6 +54,7 @@
     <Compile Include="ConcreteImplementation\ConcreteSpecimen.cs" />
     <Compile Include="ConcreteImplementation\Extensions.cs" />
     <Compile Include="ConcreteImplementation\IClonable.cs" />
+    <Compile Include="ConcreteRandomAlgoPopulationBuilder.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

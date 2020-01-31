@@ -6,7 +6,7 @@ using TestApplication.GeneticAlgorithm.Interfaces;
 
 namespace TestApplication.UI.ConcreteImplementation
 {
-    public class ConcreteFitnessProvider : IFitnessProvider<ConcreteSpecimen, double>
+    public class ConcreteFitnessProvider : IFitnessProvider<ConcreteSpecimen>
     {
         private readonly Func<double, double, double> _function;
         private readonly double _acceptingDistance;
@@ -17,7 +17,7 @@ namespace TestApplication.UI.ConcreteImplementation
             _acceptingDistance = acceptingDistance;
         }
 
-        public void ReCalculateFitness(ref IWeightedList<ConcreteSpecimen, double> population)
+        public void ReCalculateFitness(ref IWeightedList<ConcreteSpecimen> population)
         {
             foreach (var item in population)
             {
@@ -36,7 +36,7 @@ namespace TestApplication.UI.ConcreteImplementation
             }
         }
 
-        public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen, double> population)
+        public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen> population)
         {
             return population.Where(x => 1 - x.Weight < _acceptingDistance)
                              .Select(x => x.Item)

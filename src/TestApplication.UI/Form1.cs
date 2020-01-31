@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -110,6 +111,11 @@ namespace TestApplication.UI
 
             comboboxTargetFunction.Items.AddRange(_functions.Values.ToArray());
             comboboxTargetFunction.SelectedIndex = 0;
+
+            // Necessary to take the window frame width/height into account
+            this.chromeWidth = this.Width - this.ClientSize.Width;
+            this.chromeHeight = this.Height - this.ClientSize.Height;
+            this.ClientSize = new System.Drawing.Size(1052, 451);
         }
 
         private IEvolutionRunner<ConcreteSpecimen> Build()
@@ -151,21 +157,21 @@ namespace TestApplication.UI
         private IEvolutionRunner<ConcreteSpecimen> BuildRandomAlgo()
         {
             // Used to build the starter population:
-            var builder = new ConcretePopulationBuilder();
+            var builder = new ConcreteRandomAlgoPopulationBuilder();
 
             // Used to define the fitness function.
             var fitnessProvider = new ConcreteFitnessProvider(GetSelectedFunction().Function, GetAcceptingDistance());
 
             // The manager of the whole algorithm, it accepts the builder, selector and mutator objects as plugins. (See Strategy pattern.)
-            var evolutionAlgorithm = new ConcreteRandomAlgorithm<ConcreteSpecimen, double>(builder, fitnessProvider);
+            var evolutionAlgorithm = new ConcreteRandomAlgorithm<ConcreteSpecimen>(builder, fitnessProvider);
 
             return evolutionAlgorithm;
         }
 
         private void btnStartStop_Click(object sender, EventArgs e)
         {
-            var t = new Task(() => StartAlgorithm());
-            t.Start();
+            var t1 = new Task(() => StartAlgorithm());
+            t1.Start();
         }
 
         private void StartAlgorithm()
@@ -412,14 +418,14 @@ namespace TestApplication.UI
 
         private void btnStartStopRandomAlgo_Click(object sender, EventArgs e)
         {
-            var t = new Task(() => StartRandomAlgo());
-            t.Start();
+            var t2 = new Task(() => StartRandomAlgo());
+            t2.Start();
         }
 
         private void btnCompareStart_Click(object sender, EventArgs e)
         {
-            var t1 = new Task(() => StartRandomAlgo());
-            var t2 = new Task(() => StartAlgorithm());
+            var t1 = new Task(() => StartAlgorithm());
+            var t2 = new Task(() => StartRandomAlgo());
             t1.Start();
             t2.Start();
         }
@@ -430,6 +436,80 @@ namespace TestApplication.UI
 
             btnStartComparisonOfAlgorithms.Enabled = btnStartEvolution.Enabled = btnStartRandomAlgorithm.Enabled = isParsable;
             textboxAcceptingDistance.BackColor = isParsable ? SystemColors.Window : Color.Red;
+        }
+
+        #region Resizer
+        private float constantWidth = 2.33259f;
+        private float constantHeight = 1;
+
+        private int chromeWidth;
+        private int chromeHeight;
+
+        // From Windows SDK
+        private const int WM_SIZING = 0x214;
+
+        private const int WMSZ_LEFT = 1;
+        private const int WMSZ_RIGHT = 2;
+        private const int WMSZ_TOP = 3;
+        private const int WMSZ_BOTTOM = 6;
+
+        struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_SIZING)
+            {
+                RECT rc = (RECT)Marshal.PtrToStructure(m.LParam, typeof(RECT));
+
+                int w = rc.Right - rc.Left - chromeWidth;
+                int h = rc.Bottom - rc.Top - chromeHeight;
+
+                switch (m.WParam.ToInt32()) // Resize handle
+                {
+                    case WMSZ_LEFT:
+                    case WMSZ_RIGHT:
+                        // Left or right handles, adjust height
+                        rc.Bottom = rc.Top + chromeHeight + (int)(constantHeight * w / constantWidth);
+                        break;
+
+                    case WMSZ_TOP:
+                    case WMSZ_BOTTOM:
+                        // Top or bottom handles, adjust width
+                        rc.Right = rc.Left + chromeWidth + (int)(constantWidth * h / constantHeight);
+                        break;
+
+                    case WMSZ_LEFT + WMSZ_TOP:
+                    case WMSZ_LEFT + WMSZ_BOTTOM:
+                        // Top-left or bottom-left handles, adjust width
+                        rc.Left = rc.Right - chromeWidth - (int)(constantWidth * h / constantHeight);
+                        break;
+
+                    case WMSZ_RIGHT + WMSZ_TOP:
+                        // Top-right handle, adjust height
+                        rc.Top = rc.Bottom - chromeHeight - (int)(constantHeight * w / constantWidth);
+                        break;
+
+                    case WMSZ_RIGHT + WMSZ_BOTTOM:
+                        // Bottom-right handle, adjust height
+                        rc.Bottom = rc.Top + chromeHeight + (int)(constantHeight * w / constantWidth);
+                        break;
+                }
+
+                Marshal.StructureToPtr(rc, m.LParam, true);
+            }
+
+            base.WndProc(ref m);
+        }
+        #endregion
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
         }
     }
 }

@@ -2,10 +2,9 @@
 
 namespace TestApplication.GeneticAlgorithm.DataStructures
 {
-    public class WeightedItem<TItem, TWeight> : IComparable<WeightedItem<TItem, TWeight>>
-        where TWeight : IComparable<TWeight>
+    public class WeightedItem<TItem> : IComparable<WeightedItem<TItem>>
     {
-        public WeightedItem(TItem item, TWeight weight)
+        public WeightedItem(TItem item, double weight)
         {
             Item = item;
             Weight = weight;
@@ -13,9 +12,9 @@ namespace TestApplication.GeneticAlgorithm.DataStructures
 
         public TItem Item { get; set; }
 
-        public TWeight Weight { get; set; }
+        public double Weight { get; set; }
 
-        public int CompareTo(WeightedItem<TItem, TWeight> other)
+        public int CompareTo(WeightedItem<TItem> other)
         {
             return this.Weight.CompareTo(other.Weight);
         }

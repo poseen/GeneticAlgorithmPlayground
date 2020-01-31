@@ -3,8 +3,8 @@ using TestApplication.GeneticAlgorithm.DataStructures;
 
 namespace TestApplication.GeneticAlgorithm.Interfaces
 {
-    public interface IPopulationBuilder<TSpecimen, TWeight> where TWeight : IComparable<TWeight>
+    public interface IPopulationBuilder<TSpecimen>
     {
-        IWeightedList<TSpecimen, TWeight> Build(int sizeOfStarterPopulation);
+        IWeightedList<TSpecimen> Build(int sizeOfStarterPopulation);
     }
 }
