@@ -82,50 +82,6 @@ namespace TestApplication.GeneticAlgorithm.DataStructures
             _internalList.RemoveAt(index);
         }
 
-        public TSpecimen WeightedRandom()
-        {
-            if(!_internalList.Any())
-            {
-                return default;
-            }
-
-            const int maxRounds = 4;
-            var rounds = 0;
-
-            var random = new Random();
-
-            // This is the item we return if we couldn't find any in the roulette...
-            var finalItem = _internalList[random.Next(0, _internalList.Count)].Item;
-
-            var minWeight = _internalList.Min(x => x.Weight);
-            var maxWeight = _internalList.Max(x => x.Weight);
-            var diffWeight = maxWeight - minWeight;
-            
-            var enumerator = _internalList.GetEnumerator();
-            enumerator.MoveNext();
-
-            while (true)
-            {
-                if (rounds >= maxRounds)
-                {
-                    return finalItem;
-                }
-
-                // Try to move to the next. If we are at the end of the list, we go again.
-                if (!enumerator.MoveNext())
-                {
-                    rounds++;
-                    enumerator.MoveNext();
-                }
-
-                var p = minWeight + random.NextDouble() * diffWeight;
-                if(enumerator.Current.Weight < p)
-                {
-                    return enumerator.Current.Item;
-                }
-            }
-        }
-
         #region IList overrides
         object IList.this[int index]
         {

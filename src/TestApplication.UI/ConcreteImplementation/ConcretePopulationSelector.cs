@@ -50,7 +50,7 @@ namespace TestApplication.UI.ConcreteImplementation
             for (var i = 0; i < count; i++)
             {
                 var parents = new WeightedItem<ConcreteSpecimen>[2];
-                for(var j = 0; j < numberOfParents; j++)
+                for (var j = 0; j < numberOfParents; j++)
                 {
                     while (parents[j] == null)
                     {
@@ -68,6 +68,10 @@ namespace TestApplication.UI.ConcreteImplementation
                         }
                     }
                 }
+
+                //var parents = new WeightedItem<ConcreteSpecimen>[2];
+                //parents[0] = originalPopulation.WeightedRandom();
+                //parents[1] = originalPopulation.WeightedRandom();
 
                 double x, y;
 

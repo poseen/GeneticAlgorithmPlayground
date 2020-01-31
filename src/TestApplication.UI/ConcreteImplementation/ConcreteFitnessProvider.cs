@@ -27,7 +27,7 @@ namespace TestApplication.UI.ConcreteImplementation
                 // We are searching for those points, which are inside (-2, -2)..(2, 2) radius.
                 if(Math.Abs(item.Item.X) > 2 || Math.Abs(item.Item.Y) > 2)
                 {
-                    distanceFromTarget = 2;
+                    distanceFromTarget = 3;
                 }
 
                 var fitness = 1.0d / (1.0d + distanceFromTarget);
@@ -39,6 +39,7 @@ namespace TestApplication.UI.ConcreteImplementation
         public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen> population)
         {
             return population.Where(x => 1 - x.Weight < _acceptingDistance)
+                             .Where(x => Math.Abs(x.Item.X) <= 2 && Math.Abs(x.Item.Y) <= 2)
                              .Select(x => x.Item)
                              .ToList()
                              .AsReadOnly();
