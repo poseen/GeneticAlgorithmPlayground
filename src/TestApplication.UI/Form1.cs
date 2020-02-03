@@ -17,8 +17,8 @@ namespace TestApplication.UI
 {
     public partial class MainForm : Form
     {
-        const int imgWidth = 600;
-        const int imgHeight = 600;
+        const int imgWidth = 1000;
+        const int imgHeight = 1000;
 
         private readonly Image _imageEvolutionPreviewImage;
         private readonly Image _bgImgEvolutionPreviewImage;

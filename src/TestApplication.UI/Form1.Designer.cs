@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelSettings = new System.Windows.Forms.Panel();
             this.groupboxStatistics = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -82,7 +83,7 @@
             this.panelSettings.Controls.Add(this.numericStartPopulationSize);
             this.panelSettings.Controls.Add(this.labelStartPopulation);
             this.panelSettings.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelSettings.Location = new System.Drawing.Point(805, 0);
+            this.panelSettings.Location = new System.Drawing.Point(808, 0);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Padding = new System.Windows.Forms.Padding(6);
             this.panelSettings.Size = new System.Drawing.Size(247, 451);
@@ -414,7 +415,7 @@
             this.pictureboxEvolutionPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureboxEvolutionPreview.Location = new System.Drawing.Point(3, 3);
             this.pictureboxEvolutionPreview.Name = "pictureboxEvolutionPreview";
-            this.pictureboxEvolutionPreview.Size = new System.Drawing.Size(396, 405);
+            this.pictureboxEvolutionPreview.Size = new System.Drawing.Size(398, 405);
             this.pictureboxEvolutionPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureboxEvolutionPreview.TabIndex = 1;
             this.pictureboxEvolutionPreview.TabStop = false;
@@ -424,7 +425,7 @@
             this.labelIterationInfoForEvolutionAlgorithm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelIterationInfoForEvolutionAlgorithm.Location = new System.Drawing.Point(3, 431);
             this.labelIterationInfoForEvolutionAlgorithm.Name = "labelIterationInfoForEvolutionAlgorithm";
-            this.labelIterationInfoForEvolutionAlgorithm.Size = new System.Drawing.Size(396, 20);
+            this.labelIterationInfoForEvolutionAlgorithm.Size = new System.Drawing.Size(398, 20);
             this.labelIterationInfoForEvolutionAlgorithm.TabIndex = 2;
             this.labelIterationInfoForEvolutionAlgorithm.Text = "-";
             this.labelIterationInfoForEvolutionAlgorithm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -433,9 +434,9 @@
             // 
             this.pictureboxRandomPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureboxRandomPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureboxRandomPreview.Location = new System.Drawing.Point(405, 3);
+            this.pictureboxRandomPreview.Location = new System.Drawing.Point(407, 3);
             this.pictureboxRandomPreview.Name = "pictureboxRandomPreview";
-            this.pictureboxRandomPreview.Size = new System.Drawing.Size(397, 405);
+            this.pictureboxRandomPreview.Size = new System.Drawing.Size(398, 405);
             this.pictureboxRandomPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureboxRandomPreview.TabIndex = 3;
             this.pictureboxRandomPreview.TabStop = false;
@@ -459,22 +460,22 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(805, 451);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(808, 451);
             this.tableLayoutPanel2.TabIndex = 4;
             // 
             // labelIterationInfoForRandomAlgorithm
             // 
             this.labelIterationInfoForRandomAlgorithm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelIterationInfoForRandomAlgorithm.Location = new System.Drawing.Point(405, 431);
+            this.labelIterationInfoForRandomAlgorithm.Location = new System.Drawing.Point(407, 431);
             this.labelIterationInfoForRandomAlgorithm.Name = "labelIterationInfoForRandomAlgorithm";
-            this.labelIterationInfoForRandomAlgorithm.Size = new System.Drawing.Size(397, 20);
+            this.labelIterationInfoForRandomAlgorithm.Size = new System.Drawing.Size(398, 20);
             this.labelIterationInfoForRandomAlgorithm.TabIndex = 6;
             this.labelIterationInfoForRandomAlgorithm.Text = "-";
             this.labelIterationInfoForRandomAlgorithm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelRandomPreview
             // 
-            this.labelRandomPreview.Location = new System.Drawing.Point(405, 411);
+            this.labelRandomPreview.Location = new System.Drawing.Point(407, 411);
             this.labelRandomPreview.Name = "labelRandomPreview";
             this.labelRandomPreview.Size = new System.Drawing.Size(397, 13);
             this.labelRandomPreview.TabIndex = 5;
@@ -498,6 +499,7 @@
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.panelSettings);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1068, 490);
             this.Name = "MainForm";

@@ -14,17 +14,10 @@ namespace TestApplication.UI.ConcreteImplementation
         {
         }
 
-        private int iterations = 0;
+        private int iteration = 0;
 
         public void Mutate(ref IWeightedList<ConcreteSpecimen> population)
         {
-            iterations = (iterations + 1) % 10;
-
-            if(iterations != 0)
-            {
-                return;
-            }
-
             // Mutate
             var totalNumberOfMutableProperties = population.Count * 2; // population size * number of mutable properties.
 
@@ -32,9 +25,12 @@ namespace TestApplication.UI.ConcreteImplementation
                                     .OrderBy(x => Guid.NewGuid())
                                     .Take((int)Math.Floor(_mutationProbability * totalNumberOfMutableProperties));
 
-            
-            var mutationX = (random.Next(0, 2) == 0 ? -1 : 1) * random.NextDouble() * 10;
-            var mutationY = (random.Next(0, 2) == 0 ? -1 : 1) * random.NextDouble() * 10;
+            iteration = (iteration + 1) % 10;
+
+            var strength = Math.Sin((iteration / 10.0d) * Math.PI);
+
+            var mutationFactorX = strength * (random.Next(0, 2) == 0 ? -1 : 1) * random.NextDouble() * 10d;
+            var mutationFactorY = strength * (random.Next(0, 2) == 0 ? -1 : 1) * random.NextDouble() * 10d;
 
             foreach (var idx in indexes)
             {
@@ -46,11 +42,10 @@ namespace TestApplication.UI.ConcreteImplementation
                 var x = specimen.X;
                 var y = specimen.Y;
 
-
                 switch (propertyIndex)
                 {
-                    case 0: x = x + mutationX; break;
-                    case 1: y = y + mutationY; break;
+                    case 0: x = x + mutationFactorX; break;
+                    case 1: y = y + mutationFactorY; break;
                     default: throw new ArgumentOutOfRangeException(nameof(propertyIndex));
                 }
 
