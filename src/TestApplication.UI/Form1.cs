@@ -49,9 +49,9 @@ namespace TestApplication.UI
             MonkeySaddle,
 
             /// <summary>
-            /// f(x, y) = sin(x²) * cos(y²) - 5
+            /// f(x, y) = sin(x²) * cos(y²) - 0.5
             /// </summary>
-            Sinx2Cosy2Minus5,
+            Sinx2Cosy2Minus05,
 
             /// <summary>
             /// Bumps
@@ -104,7 +104,7 @@ namespace TestApplication.UI
                 { 0, new FunctionDescription("Ripple", Function.Ripple, (x, y) => Math.Sin(x * x + y * y)) },
                 { 1, new FunctionDescription("Hyperbolic paraboloid", Function.HyperbolicParaboloid, (x, y) => x*x - y*y) },
                 { 2, new FunctionDescription("Monkey-Saddle", Function.MonkeySaddle, (x, y) => x * x * x - 3 * x * y * y) },
-                { 3, new FunctionDescription("Sin(x²) * Cos(y²) - 0.5", Function.Sinx2Cosy2Minus5, (x, y) => (Math.Sin(x * x) * Math.Cos(y * y)) - 0.5d) },
+                { 3, new FunctionDescription("Sin(x²) * Cos(y²) - 0.5", Function.Sinx2Cosy2Minus05, (x, y) => (Math.Sin(x * x) * Math.Cos(y * y)) - 0.5d) },
                 { 4, new FunctionDescription("Bumps", Function.Bumps, (x, y) => (Math.Sin(5 * x) * Math.Cos(5 * y)) / 5.0d) },
                 { 5, new FunctionDescription("Intersecting Fences", Function.IntersectingFences, (x, y) => 0.75d / Math.Exp(Math.Pow((x * 5), 2) * Math.Pow((y * 5), 2)) - 0.1d) }
             };

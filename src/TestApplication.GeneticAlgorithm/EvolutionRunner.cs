@@ -37,17 +37,15 @@ namespace TestApplication.GeneticAlgorithm
         public void Initialize(int starterPopulationSize)
         {
             _population = _populationBuilder.Build(starterPopulationSize);
-            _fitnessProvider.ReCalculateFitness(ref _population);
         }
 
         public void Iterate()
         {
-
-            _populationSelector.NaturalSelection(ref _population);
-            _populationMutator.Mutate(ref _population);
             _fitnessProvider.ReCalculateFitness(ref _population);
             var acceptedSpecimen = _fitnessProvider.GetAcceptableSpecimens(_population);
             _specimenCollector.AddRange(acceptedSpecimen);
+            _populationSelector.NaturalSelection(ref _population);
+            _populationMutator.Mutate(ref _population);
         }
     }
 }
