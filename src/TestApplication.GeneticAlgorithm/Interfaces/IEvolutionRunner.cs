@@ -9,7 +9,5 @@ namespace TestApplication.GeneticAlgorithm.Interfaces
         void Iterate();
 
         IReadOnlyCollection<TSpecimen> Population { get; }
-        
-        IReadOnlyCollection<TSpecimen> Result { get; }
     }
 }

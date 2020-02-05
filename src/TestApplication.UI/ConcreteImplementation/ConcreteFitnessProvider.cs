@@ -8,46 +8,48 @@ namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcreteFitnessProvider : IFitnessProvider<ConcreteSpecimen>
     {
-        private readonly Func<double, double, double> _function;
-        private readonly double _acceptingDistance;
+        private readonly Func<double, double> _function;
 
-        public ConcreteFitnessProvider(Func<double, double, double> functionToBeExamined, double acceptingDistance)
+        public ConcreteFitnessProvider(Func<double, double> functionToBeExamined)
         {
             _function = functionToBeExamined;
-            _acceptingDistance = acceptingDistance;
         }
 
         public void ReCalculateFitness(ref IWeightedList<ConcreteSpecimen> population)
         {
+            var minimum = double.PositiveInfinity;
+            var maximum = double.NegativeInfinity;
+
             foreach (var item in population)
             {
-                // Calculate the fitness value of the specimen. 1 means perfect specimen, lower values are worse.
-                var distanceFromTarget = Math.Abs(FitnessFunction(item.Item.X, item.Item.Y) - 0);
-                
-                // We are searching for those points, which are inside (-2, -2)..(2, 2) radius.
-                if(Math.Abs(item.Item.X) > 2 || Math.Abs(item.Item.Y) > 2)
+                // We are searching for global minimum.
+                // Maybe the number of global minimum is infinite.
+                var functionValue = FitnessFunction(item.Item.X);
+                if(functionValue < minimum)
                 {
-                    distanceFromTarget = 3;
+                    minimum = functionValue;
                 }
 
-                var fitness = 1.0d / (1.0d + distanceFromTarget);
+                if (functionValue > maximum)
+                {
+                    maximum = functionValue;
+                }
 
-                item.Weight = fitness;
+                item.Weight = functionValue;
+            }
+
+            var diff = maximum - minimum + 1; // +1 to avoid division by zero
+
+            foreach (var item in population)
+            {
+                var p = 1 - ((item.Weight + minimum) / diff);
+                item.Weight = p;
             }
         }
 
-        public ICollection<ConcreteSpecimen> GetAcceptableSpecimens(IWeightedList<ConcreteSpecimen> population)
+        private double FitnessFunction(double x)
         {
-            return population.Where(x => 1 - x.Weight < _acceptingDistance)
-                             .Where(x => Math.Abs(x.Item.X) <= 2 && Math.Abs(x.Item.Y) <= 2)
-                             .Select(x => x.Item)
-                             .ToList()
-                             .AsReadOnly();
-        }
-
-        private double FitnessFunction(double x, double y)
-        {
-            return _function(x, y);
+            return _function(x);
         }
     }
 }

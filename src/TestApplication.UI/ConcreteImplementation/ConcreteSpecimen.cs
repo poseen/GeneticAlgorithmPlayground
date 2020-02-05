@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace TestApplication.UI.ConcreteImplementation
 {
     public class ConcreteSpecimen : IClonable<ConcreteSpecimen>, ICloneable, IEquatable<ConcreteSpecimen>
     {
-        public ConcreteSpecimen(double x, double y)
+        public ConcreteSpecimen(double x)
         {
             X = x;
-            Y = y;
         }
 
         public double this[int key]
@@ -18,29 +16,26 @@ namespace TestApplication.UI.ConcreteImplementation
                 switch (key)
                 {
                     case 0: return X;
-                    case 1: return Y;
-                    default: throw new IndexOutOfRangeException("Index has to be between 0-1 inclusive.");
+                    default: throw new IndexOutOfRangeException("Index has to be between 0-0 inclusive.");
                 };
             }
         }
 
         public double X { get; }
 
-        public double Y { get; }
-
         public override int GetHashCode()
         {
-            return X.GetHashCode() ^ Y.GetHashCode() ^ 155;
+            return X.GetHashCode() ^ 155;
         }
 
         public override string ToString()
         {
-            return $"X={X} Y={Y}";
+            return $"X={X}";
         }
 
         public ConcreteSpecimen Clone()
         {
-            return new ConcreteSpecimen(X, Y);
+            return new ConcreteSpecimen(X);
         }
 
         object ICloneable.Clone()
@@ -60,7 +55,7 @@ namespace TestApplication.UI.ConcreteImplementation
                 return true;
             }
 
-            return X.Equals5Precision(other.X) && Y.Equals5Precision(other.Y);
+            return X.Equals5Precision(other.X);
         }
 
         public override bool Equals(object obj)

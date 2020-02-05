@@ -12,7 +12,6 @@ namespace TestApplication.GeneticAlgorithm
         private readonly IPopulationSelector<TSpecimen> _populationSelector;
         private readonly IPopulationMutator<TSpecimen> _populationMutator;
         private readonly IFitnessProvider<TSpecimen> _fitnessProvider;
-        private readonly ISpecimenCollector<TSpecimen> _specimenCollector;
 
         private IWeightedList<TSpecimen> _population;
 
@@ -25,10 +24,7 @@ namespace TestApplication.GeneticAlgorithm
             _populationSelector = populationSelector;
             _populationMutator = populationMutator;
             _fitnessProvider = fitnessProvider;
-            _specimenCollector = new SpecimenCollector<TSpecimen>();
         }
-
-        public IReadOnlyCollection<TSpecimen> Result => _specimenCollector.GetSpecimens();
 
         public IReadOnlyCollection<TSpecimen> Population => _population.Select(x => x.Item)
                                                                        .ToList()
@@ -42,8 +38,6 @@ namespace TestApplication.GeneticAlgorithm
         public void Iterate()
         {
             _fitnessProvider.ReCalculateFitness(ref _population);
-            var acceptedSpecimen = _fitnessProvider.GetAcceptableSpecimens(_population);
-            _specimenCollector.AddRange(acceptedSpecimen);
             _populationSelector.NaturalSelection(ref _population);
             _populationMutator.Mutate(ref _population);
         }

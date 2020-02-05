@@ -69,37 +69,23 @@ namespace TestApplication.UI.ConcreteImplementation
                     }
                 }
 
-                //var parents = new WeightedItem<ConcreteSpecimen>[2];
-                //parents[0] = originalPopulation.WeightedRandom();
-                //parents[1] = originalPopulation.WeightedRandom();
+                double x;
 
-                double x, y;
-
-                switch (random.Next(3))
+                switch (random.Next(4))
                 {
                     case 0:
-                        x = (parents[0].Weight * parents[0].Item.X + parents[1].Weight * parents[1].Item.X) / (parents[0].Weight + parents[1].Weight);
-                        y = (parents[0].Weight * parents[0].Item.Y + parents[1].Weight * parents[1].Item.Y) / (parents[0].Weight + parents[1].Weight);
-                        break;
-
                     case 1:
-                        x = (parents[0].Weight * parents[0].Item.X + parents[1].Weight * parents[1].Item.X) / (parents[0].Weight + parents[1].Weight);
-                        y = parents[random.Next(0, 2)].Item.Y;
-                        break;
-
                     case 2:
-                        x = parents[random.Next(0, 2)].Item.X;
-                        y = (parents[0].Weight * parents[0].Item.Y + parents[1].Weight * parents[1].Item.Y) / (parents[0].Weight + parents[1].Weight);
+                        x = (parents[0].Weight * parents[0].Item.X + parents[1].Weight * parents[1].Item.X) / (parents[0].Weight + parents[1].Weight);
                         break;
 
                     default:
                         // Default case: let's just randomly select which gene is coming from which parent...
                         x = parents[random.Next(0, 2)].Item.X;
-                        y = parents[random.Next(0, 2)].Item.Y;
                         break;
                 }
 
-                var offSpring = new ConcreteSpecimen(x, y);
+                var offSpring = new ConcreteSpecimen(x);
 
                 population.Add(new WeightedItem<ConcreteSpecimen>(offSpring, 0));
             }
