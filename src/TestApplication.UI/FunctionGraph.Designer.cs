@@ -63,8 +63,8 @@
             this.Name = "FunctionGraph";
             this.Size = new System.Drawing.Size(601, 274);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FunctionGraph_Paint);
+            this.MouseLeave += new System.EventHandler(this.FunctionGraph_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FunctionGraph_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FunctionGraph_MouseUp);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.FunctionGraph_MouseWheel);
             this.ResumeLayout(false);
 

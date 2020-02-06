@@ -165,5 +165,26 @@ namespace TestApplication.UI
 
             functionGraph1.SetFunction(selectedItem.Function);
         }
+
+        private void functionGraph1_StatsChanged(object sender, EventArgs e)
+        {
+            labelFunctionValue.Text = functionGraph1.CurrentFunctionValue.HasValue
+                                      ? $"{functionGraph1.CurrentFunctionValue:0.00000}"
+                                      : "-";
+
+            labelFunctionDerivativeValue.Text = functionGraph1.CurrentFunctionDerivative.HasValue
+                                                ? $"{functionGraph1.CurrentFunctionDerivative:0.00000}"
+                                                : "-";
+
+            labelCoordinatePositionValue.Text = functionGraph1.MouseCoordinateX.HasValue && functionGraph1.MouseCoordinateY.HasValue
+                                                ? $"X:{functionGraph1.MouseCoordinateX.Value:0.00000}{Environment.NewLine}Y:{functionGraph1.MouseCoordinateY.Value:0.00000}"
+                                                : "-";
+
+            labelMousePositionValue.Text = functionGraph1.MouseDisplayX.HasValue && functionGraph1.MouseDisplayX.HasValue
+                                                ? $"X:{functionGraph1.MouseDisplayX.Value}{Environment.NewLine}Y:{functionGraph1.MouseDisplayY.Value}"
+                                                : "-";
+            
+            labelCoordinateLimitsValue.Text = $"X:[{functionGraph1.MinimumX:0.00}..{functionGraph1.MaximumX:0.00}]{Environment.NewLine}Y:[{functionGraph1.MinimumY:0.00}..{functionGraph1.MaximumY:0.00}]";
+        }
     }
 }
