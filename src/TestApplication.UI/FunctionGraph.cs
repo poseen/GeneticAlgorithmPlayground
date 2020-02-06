@@ -166,8 +166,8 @@ namespace TestApplication.UI
             g.Clear(this.BackColor);
 
             DrawAxes(g);
-            DrawFunctionValueSelection(g);
             DrawFunction(g);
+            DrawFunctionValueSelection(g);
         }
 
         private void DrawFunctionValueSelection(Graphics g)
@@ -186,10 +186,56 @@ namespace TestApplication.UI
             var chordY = ToVerticalPixel(CurrentFunctionValue.Value);
             if (chordY >= 0 && chordY <= Height)
             {
-                g.FillEllipse(FunctionValueSelectionBrush, MouseDisplayX.Value - 6, chordY - 6, 12, 12);
+                g.DrawEllipse(FunctionValuePen, MouseDisplayX.Value - 3, chordY - 3, 6, 6);
             }
 
-            // TODO : Draw derivative with red
+            // Draw derivative with red
+            var derivativeLineLength = 25;
+
+            var p1 = new PointF(MouseDisplayX.Value - derivativeLineLength, (float)(chordY + derivativeLineLength * CurrentFunctionDerivative.Value));
+            var p2 = new PointF(MouseDisplayX.Value + derivativeLineLength, (float)(chordY - derivativeLineLength * CurrentFunctionDerivative.Value));
+
+            var a = p2.X - p1.X;
+            var b = p2.Y - p1.Y;
+            var c = Math.Sqrt(a * a + b * b);
+
+            var cosAlpha = b / c;
+            var alphaRadian = Math.Acos(cosAlpha);
+            var sinAlpha = Math.Sin(alphaRadian);
+
+           
+            var d1Point = new PointF((float)(MouseDisplayX.Value + sinAlpha * derivativeLineLength),
+                                     (float)(chordY + cosAlpha * derivativeLineLength));
+
+            var d2Point = new PointF((float)(MouseDisplayX.Value - sinAlpha * derivativeLineLength),
+                                     (float)(chordY - cosAlpha * derivativeLineLength));
+
+            if(    (d1Point.X < 0 || d1Point.X > Width)
+                && (d1Point.Y < 0 || d1Point.Y > Height)
+                && (d2Point.X < 0 || d2Point.X > Width)
+                && (d2Point.Y < 0 || d2Point.Y > Height)   )
+            {
+                // We don't draw anything off the window...
+                return;
+            }
+
+            g.DrawLine(DerivativePen, d1Point, d2Point);
+        }
+
+        public Color DerivativeColor { get; set; } = Color.Red;
+
+        private Pen _derivativePen;
+        private Pen DerivativePen
+        {
+            get
+            {
+                if (_derivativePen?.Color != this.DerivativeColor)
+                {
+                    _derivativePen = new Pen(DerivativeColor, 1.3f);
+                }
+
+                return _derivativePen;
+            }
         }
 
         private static double h = 10e-6; // I'm not sure if this is valid C#, I'm used to C++
@@ -211,7 +257,7 @@ namespace TestApplication.UI
         private void DrawAxes(Graphics g)
         {
             var xAxisVerticalPosition = ToVerticalPixel(0);
-            if (xAxisVerticalPosition > 0 || xAxisVerticalPosition < Height)
+            if (xAxisVerticalPosition > 0 && xAxisVerticalPosition < Height)
             {
                 g.DrawLine(AxisPen, 0, xAxisVerticalPosition, Width, xAxisVerticalPosition);
                 g.FillPolygon(AxisBrush,
@@ -226,7 +272,7 @@ namespace TestApplication.UI
             }
 
             var yAxisHorizontalPosition = ToHorizontalPixel(0);
-            if (yAxisHorizontalPosition > 0 || yAxisHorizontalPosition < Width)
+            if (yAxisHorizontalPosition > 0 && yAxisHorizontalPosition < Width)
             {
                 g.DrawLine(AxisPen, yAxisHorizontalPosition, 0, yAxisHorizontalPosition, Height);
                 g.FillPolygon(AxisBrush,
@@ -242,24 +288,56 @@ namespace TestApplication.UI
 
         private void DrawFunction(Graphics g)
         {
+            var pointListsList = new List<List<PointF>>();
+            pointListsList.Clear();
+
             var points = new List<PointF>();
-            points.Clear();
             for (var x = 0; x < Width; x++)
             {
                 var fx = ToHorizontalUnit(x);
                 var fy = MathFunction(fx);
+                var fdy = Derivative(MathFunction, fx);
+
+                if (Math.Abs(fdy) > 500)
+                {
+                    pointListsList.Add(points);
+                    points = new List<PointF>();
+                }
+
                 points.Add(new PointF((float)fx, (float)fy));
             }
 
-            if (points.Count > 1)
+            if(points.Count > 1)
             {
-                var path = new System.Drawing.Drawing2D.GraphicsPath();
-                path.AddLines(points.Select(x => new PointF(ToHorizontalPixel(x.X), ToVerticalPixel(x.Y))).ToArray());
-                g.DrawPath(GraphPen, path);
+                pointListsList.Add(points);
+            }
+
+            foreach (var p in pointListsList)
+            {
+                if (p.Count > 2)
+                {
+                    var path = new System.Drawing.Drawing2D.GraphicsPath();
+                    path.AddLines(p.Select(x => new PointF(ToHorizontalPixel(x.X), ToVerticalPixel(x.Y))).ToArray());
+                    g.DrawPath(GraphPen, path);
+                }
             }
         }
 
-        public Brush FunctionValueSelectionBrush { get; set; } = Brushes.BlueViolet;
+        public Color FunctionValueColor { get; set; } = Color.Gray;
+
+        private Pen _functionValuePen;
+        private Pen FunctionValuePen
+        {
+            get
+            {
+                if (_functionValuePen?.Color != this.FunctionValueColor)
+                {
+                    _functionValuePen = new Pen(FunctionValueColor, 1.3f);
+                }
+
+                return _functionValuePen;
+            }
+        }
 
         private void FunctionGraph_MouseMove(object sender, MouseEventArgs e)
         {
