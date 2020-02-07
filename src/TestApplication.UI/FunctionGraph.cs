@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 
@@ -46,28 +43,6 @@ namespace TestApplication.UI
         {
             MathFunction = mathFunction;
             this.Refresh();
-        }
-
-        /// <summary>
-        /// Translates the given dx, dy to "image coordinates" where the image size is given.
-        /// dy and dy considered to be between -1 and 1.
-        /// </summary>
-        /// <param name="dx">The value in the X-axis, must be between [-1, 1].</param>
-        /// <param name="dy">The value in the Y-axis, must be between [-1, 1].</param>
-        /// <param name="width">Width of the canvas where we would like to plot the found points of the function.</param>
-        /// <param name="height">Height of the canvas where we would like to plot the found points of the function.</param>
-        /// <returns>A tuple of (x, y) with the translated coordinates.</returns>
-        private static (int x, int y) Translate(double dx, double dy, int width, int height)
-        {
-            var halfWidth = width / 2.0d;
-            var halfHeight = height / 2.0d;
-
-            var middleY = height / 2;
-
-            var tx = (int)Math.Round((dx + 1) * halfWidth);
-            var ty = (int)Math.Round(middleY - dy * halfHeight);
-
-            return (tx, ty);
         }
 
         public double DisplayWidth => this.Width;
@@ -156,6 +131,22 @@ namespace TestApplication.UI
             }
         }
 
+        public Color GridColor { get; set; } = Color.LightGray;
+
+        private Pen _gridPen;
+        private Pen GridPen
+        {
+            get
+            {
+                if (_gridPen?.Color != this.GridColor)
+                {
+                    _gridPen = new Pen(GridColor, 1.0f);
+                }
+
+                return _gridPen;
+            }
+        }
+
         public SmoothingMode SmoothingMode { get; set; } = SmoothingMode.AntiAlias;
 
         private void FunctionGraph_Paint(object sender, PaintEventArgs e)
@@ -165,9 +156,48 @@ namespace TestApplication.UI
             g.SmoothingMode = SmoothingMode;
             g.Clear(this.BackColor);
 
+            DrawGrid(g);
             DrawAxes(g);
             DrawFunction(g);
             DrawFunctionValueSelection(g);
+        }
+
+        private void DrawGrid(Graphics g)
+        {
+            DrawVerticalLines(g);
+            DrawHorizontalLines(g);
+        }
+
+        private void DrawVerticalLines(Graphics g)
+        {
+            var horizontalInterval = Math.Max(MaximumX, MinimumX) - Math.Min(MaximumX, MinimumX);
+            var log = Math.Log10(horizontalInterval);
+            var power = log <= 0 ? (int)log : ((int)log - 1);
+            var stepSize = Math.Pow(10, power);
+            var numberOfVerticalLines = (int)Math.Round(horizontalInterval / stepSize);
+            var startX = 0;
+
+            for (var i = 0; i < numberOfVerticalLines; i++)
+            {
+                var x = startX + ToHorizontalPixel(i * stepSize);
+                g.DrawLine(GridPen, x, 0, x, Height);
+            }
+        }
+
+        private void DrawHorizontalLines(Graphics g)
+        {
+            var verticalInterval = Math.Max(MaximumY, MinimumY) - Math.Min(MaximumY, MinimumY);
+            var log = Math.Log10(verticalInterval);
+            var power = log <= 0 ? (int)log : ((int)log - 1);
+            var stepSize = Math.Pow(10, power);
+            var numberOfHorizontalLines = (int)Math.Round(verticalInterval / stepSize);
+            var startY = 0;
+
+            for (var i = 0; i < numberOfHorizontalLines; i++)
+            {
+                var y = startY + ToVerticalPixel(i * stepSize);
+                g.DrawLine(GridPen, 0, y, Width, y);
+            }
         }
 
         private void DrawFunctionValueSelection(Graphics g)
@@ -210,10 +240,7 @@ namespace TestApplication.UI
             var d2Point = new PointF((float)(MouseDisplayX.Value - sinAlpha * derivativeLineLength),
                                      (float)(chordY - cosAlpha * derivativeLineLength));
 
-            if(    (d1Point.X < 0 || d1Point.X > Width)
-                && (d1Point.Y < 0 || d1Point.Y > Height)
-                && (d2Point.X < 0 || d2Point.X > Width)
-                && (d2Point.Y < 0 || d2Point.Y > Height)   )
+            if(d1Point.Y < 0 || d1Point.Y > Height || d2Point.Y < 0 || d2Point.Y > Height)
             {
                 // We don't draw anything off the window...
                 return;
